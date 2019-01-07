@@ -1,42 +1,94 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<html>
+<head>
+    <style>
+        td {
+            border: solid 1px black;
+            padding: 3px;
+        }
 
-<script type="text/javascript">
-    //alert("hello");
+        th {
+            border: solid 1px black;
+            padding: 3px;
+        }
+    </style>
 
-    var registers = {};
-    registers["zero"] = 0;
-    registers["$at"] = 0;
-    registers["$v0"] = 0;
-    registers["$v1"] = 0;
-    registers["$a0"] = 0;
-    registers["$a1"] = 0;
-    registers["$a2"] = 0;
-    registers["$a3"] = 0;
-    registers["$t0"] = 0;
-    registers["$t1"] = 0;
-    registers["$t2"] = 0;
-    registers["$t3"] = 0;
-    registers["$t4"] = 0;
-    registers["$t5"] = 0;
-    registers["$t6"] = 0;
-    registers["$t7"] = 0;
-    registers["$s0"] = 0;
-    registers["$s1"] = 0;
-    registers["$s2"] = 0;
-    registers["$s3"] = 0;
-    registers["$s4"] = 0;
-    registers["$s5"] = 0;
-    registers["$s6"] = 0;
-    registers["$s7"] = 0;
-    registers["$t8"] = 0;
-    registers["$t9"] = 0;
-    registers["$k0"] = 0;
-    registers["$k1"] = 0;
-    registers["$gp"] = 0;
-    registers["$sp"] = 0;
-    registers["$fp"] = 0;
-    registers["$ra"] = 0;
+    <script src="js/init.js">
+    </script>
 
-</script>
+    <script src="js/output.js">
+    </script>
+
+    <script src="js/logic.js">
+    </script>
+
+    <script src="js/jquery-3.3.1.js">
+    </script>
+
+    <script type="text/javascript">
+        const MEMORY_SIZE = 1024;
+        const REGISTER_COUNT = 32;
+
+        var registers = null;
+        var memory = null;
+
+        $(document).ready(function () {
+            registers = initRegisters();
+            memory = initMemory();
+
+            writeMemory(memory);
+            writeRegisters(registers);
+
+            $("#btnLoadCode").click(btnLoadCode_Click);
+        });
+
+        function testWordSize() {
+            //i know that JS ints are 32 bits because this int keeps doubling until it gets to 31 shifts, where it becomes negative, then after 32 shifts it becomes 0
+            var bitmask = 1;
+            for (var i = 0; i < 32; i++) {
+                bitmask = bitmask << 1;
+                alert("bitmask after " + (i + 1) + " shifts: " + bitmask);
+            }
+        }
+
+        function btnLoadCode_Click() {
+
+            var code = $("#txtCode").val();
+            LoadCode(memory, code);
+
+        }
+
+    </script>
+</head>
+    <body>
+        <div id="testDiv"></div>
+
+        <div style="float:left; padding:3px;">
+            <div style="padding:3px; float:left;">
+                Code:
+                <br />
+                <textarea id="txtCode" cols="15" rows="30"></textarea>
+            </div>
+            <div style="padding:3px; padding-left:30px; float:left;">
+                Registers:
+                <br />
+                <div id="divRegisterValues">
+                </div>
+            </div>
+            <div style="padding:3px; padding-left:30px; float:left; overflow:scroll; max-height:900px;">
+                Memory:
+                <br />
+                <div id="divMemoryValues">
+                </div>
+            </div>
+            <div style="float:left; clear:left; margin-top:15px;">
+                <input type="button" id="btnLoadCode" value="load code" />
+                <br />
+                <br />
+                <input type="button" value="step" />
+            </div>
+        </div>
+    </body>
+</html>
