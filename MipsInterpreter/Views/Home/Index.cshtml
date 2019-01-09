@@ -30,6 +30,7 @@
     <script type="text/javascript">
         const MEMORY_SIZE = 1024;
         const REGISTER_COUNT = 32;
+        const WORD_SIZE_IN_BYTES = 4;
 
         var registers = null;
         var memory = null;
@@ -54,10 +55,11 @@
         }
 
         function btnLoadCode_Click() {
-
             var code = $("#txtCode").val();
-            LoadCode(memory, code);
+            var programCounterInitValue = LoadCode(code);
+            registers["$pc"] = programCounterInitValue;
 
+            writeRegisters(registers);
         }
 
     </script>

@@ -1,6 +1,5 @@
 ﻿
 function initRegisters() {
-
     var registers = {};
     registers["zero"] = "";
     registers["$at"] = "";
@@ -34,6 +33,7 @@ function initRegisters() {
     registers["$sp"] = "";
     registers["$fp"] = "";
     registers["$ra"] = "";
+    registers["$pc"] = "";
 
     return registers;
 }

@@ -14,7 +14,7 @@
 
 
         html += "<td>";
-        html += i * 4;
+        html += i * WORD_SIZE_IN_BYTES;
         html += "</td>";
 
         html += "<td>";
