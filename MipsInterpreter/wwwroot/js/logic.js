@@ -14,6 +14,10 @@ function GetTextAndDataSections(code) {
         var uncommented = StripComments(codeLines[i]);
         var trimmed = uncommented.trim();
 
+        if (trimmed == "") {
+            continue;
+        }
+
         if (trimmed == ".data") {
             isInDataSection = true;
             continue;
@@ -25,7 +29,15 @@ function GetTextAndDataSections(code) {
         }
 
         if (isInDataSection) {
-            dataSectionLines.push(codeLines[i]);
+            debugger;
+            var parsedDataLine = parseDataSectionLine(codeLines[i]);
+
+            if (!parsedDataLine.IsError) {
+                dataSectionLines.push(parsedDataLine.Value);
+            }
+            else {
+                throw "invalid data line: '" + codeLines[i] + "'";
+            }
         }
         else if (isInTextSection) {
             textSectionLines.push(codeLines[i]);
@@ -47,6 +59,50 @@ function StripComments(codeLine) {
     }
     else {
         retVal = codeLine.substring(0, hashIndex);
+    }
+
+    return retVal;
+}
+
+function parseDataSectionLine(dataSectionLine) {
+    var retVal = {};
+
+    var uncommented = StripComments(dataSectionLine);
+    var whitespaceConverted = uncommented.replace(/\t/g, " "); //first char is a tab
+    whitespaceConverted = whitespaceConverted.trim();
+
+    var split = whitespaceConverted.split(" ");
+
+    var label = null;
+    var foundWordDeclaration = false;
+    var value = null;
+    for (var splitIndex = 0; splitIndex < split.length; splitIndex++) {
+        var curToken = split[splitIndex];
+        if (curToken == "") {
+            continue;
+        }
+
+        
+        if (curToken == ".word") {
+            foundWordDeclaration = true;
+        }
+        else if (splitIndex == split.length - 1) {
+            value = curToken;
+        }
+        else {
+            label = curToken;
+        }
+    }
+
+    if ((!foundWordDeclaration || value == null) || (label != null && !label.endsWith(":"))) {
+        retVal.IsError = true;
+        retVal.SourceLine = dataSectionLine;
+    }
+    else {
+        retVal.IsError = false;
+        retVal.SourceLine = dataSectionLine;
+        retVal.Label = label;
+        retVal.Value = value;
     }
 
     return retVal;
@@ -104,8 +160,4 @@ function WriteTextAndDataToMemory(sections) {
 
 function splitCodeLines(code) {
     return code.split("\n");
-}
-
-function parseSingleCodeLine(codeLine) {
-
 }

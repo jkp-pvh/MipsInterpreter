@@ -55,11 +55,17 @@
         }
 
         function btnLoadCode_Click() {
-            var code = $("#txtCode").val();
-            var programCounterInitValue = LoadCode(code);
-            registers["$pc"] = programCounterInitValue;
 
-            writeRegisters(registers);
+            try {
+                var code = $("#txtCode").val();
+                var programCounterInitValue = LoadCode(code);
+                registers["$pc"] = programCounterInitValue;
+
+                writeRegisters(registers);
+            }
+            catch (e) {
+                alert(e);
+            }
         }
 
     </script>
