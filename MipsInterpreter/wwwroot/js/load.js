@@ -67,45 +67,65 @@ function parseDataSectionLines(dataLines) {
         whitespaceConverted = whitespaceConverted.trim();
 
         var tokens = whitespaceConverted.split(" ");
-        tokens = tokens.filter(function (value, index, arr) {
-            return (value != "");
-        });
+        tokens = removeBlankTokens(tokens);
 
         validateDataLine(dataLines[i], tokens, lastLineLabel);
+        var parsedResult = parseDataLine(tokens, lastLineLabel);
 
-        if (tokens.length == 1) {
-            //label only:
-            lastLineLabel = tokens[0];
-            continue;
+        if (parsedResult.ParsedLine != null) {
+            parsedAndLabeled.push(parsedResult.ParsedLine);
         }
-        else if (tokens.length == 2) {
-            var curLineLabel = null;
-
-            if (lastLineLabel != null) {
-                curLineLabel = lastLineLabel;
-                lastLineLabel = null;
-            }
-
-            var parsedLine = {
-                Label: curLineLabel,
-                DataSizeDeclaration: tokens[0],
-                Value: tokens[1]
-            };
-
-            parsedAndLabeled.push(parsedLine);
-        }
-        else if (tokens.length == 3) {
-            var parsedLine = {
-                Label: tokens[0],
-                DataSizeDeclaration: tokens[1],
-                Value: tokens[2]
-            };
-
-            parsedAndLabeled.push(parsedLine);
+        
+        if (parsedResult.ShouldUpdateLastLineLabel) {
+            lastLineLabel = parsedResult.LastLineLabel;
         }
     }
 
     return parsedAndLabeled;
+}
+
+function parseDataLine(tokens, lastLineLabel) {
+    var retVal = {};
+
+    if (tokens.length == 1) {
+        //label only:
+        retVal.LastLineLabel = tokens[0];
+        retVal.ShouldUpdateLastLineLabel = true;
+        retVal.ParsedLine = null;
+    }
+    else if (tokens.length == 2) {
+        var curLineLabel = null;
+
+        if (lastLineLabel != null) {
+            curLineLabel = lastLineLabel;
+            retVal.LastLineLabel = null;
+            retVal.ShouldUpdateLastLineLabel = true;
+        }
+
+        retVal.ParsedLine = {
+            Label: curLineLabel,
+            DataSizeDeclaration: tokens[0],
+            Value: tokens[1]
+        };
+    }
+    else if (tokens.length == 3) {
+
+        retVal.ParsedLine = {
+            Label: tokens[0],
+            DataSizeDeclaration: tokens[1],
+            Value: tokens[2]
+        };
+
+        retVal.ShouldUpdateLastLineLabel = false;
+    }
+
+    return retVal;
+}
+
+function removeBlankTokens(tokens) {
+    return tokens.filter(function (value, index, arr) {
+        return (value != "");
+    });
 }
 
 function validateDataLine(dataLine, tokens, lastLineLabel) {
