@@ -141,41 +141,6 @@ function validateDataLine(dataLine, tokens, lastLineLabel) {
     }
 }
 
-function parseDataSectionLine_OLD(dataSectionLine) {
-    var retVal = {};
-
-    var uncommented = StripComments(dataSectionLine);
-    var whitespaceConverted = uncommented.replace(/\t/g, " "); //first char is a tab
-    whitespaceConverted = whitespaceConverted.trim();
-
-    var tokens = whitespaceConverted.split(" ");
-
-    var label = null;
-    var foundWordDeclaration = false;
-    var value = null;
-
-    if (tokens.length == 1) {
-        //label only:
-        if (validateLabel(tokens[0])) {
-            label = tokens[0];
-        }
-        else {
-            retVal.IsError = true;
-        }
-    }
-    else if (tokens.length == 2) {
-        //declaration without label
-    }
-    else if (tokens.length == 3) {
-        //label and delaration
-    }
-    else {
-        retVal.IsError = true;
-    }
-
-    return retVal;
-}
-
 function validateLabel(label) {
     return label.endsWith(":");
 }
