@@ -39,9 +39,9 @@ function initRegisters() {
 }
 
 function initMemory() {
-    var memory = {};
+    var memory = [];
     for (var i = 0; i < MEMORY_SIZE; i++) {
-        memory[i] = "";
+        memory.push("");
     }
 
     return memory;

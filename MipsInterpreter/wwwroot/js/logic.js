@@ -29,15 +29,7 @@ function GetTextAndDataSections(code) {
         }
 
         if (isInDataSection) {
-            debugger;
-            var parsedDataLine = parseDataSectionLine(codeLines[i]);
-
-            if (!parsedDataLine.IsError) {
-                dataSectionLines.push(parsedDataLine.Value);
-            }
-            else {
-                throw "invalid data line: '" + codeLines[i] + "'";
-            }
+            dataSectionLines.push(codeLines[i]);
         }
         else if (isInTextSection) {
             textSectionLines.push(codeLines[i]);
@@ -64,87 +56,176 @@ function StripComments(codeLine) {
     return retVal;
 }
 
-function parseDataSectionLine(dataSectionLine) {
+function parseDataSectionLines(dataLines) {
+    var parsedAndLabeled = [];
+    var parsedIndex = 0;
+    var lastLineLabel = null;
+
+    for (var i = 0; i < dataLines.length; i++) {
+        var uncommented = StripComments(dataLines[i]);
+        var whitespaceConverted = uncommented.replace(/\t/g, " "); //\t is a tab
+        whitespaceConverted = whitespaceConverted.trim();
+
+        var tokens = whitespaceConverted.split(" ");
+        tokens = tokens.filter(function (value, index, arr) {
+            return (value != "");
+        });
+
+        validateDataLine(dataLines[i], tokens, lastLineLabel);
+
+        if (tokens.length == 1) {
+            //label only:
+            lastLineLabel = tokens[0];
+            continue;
+        }
+        else if (tokens.length == 2) {
+            var curLineLabel = null;
+
+            if (lastLineLabel != null) {
+                curLineLabel = lastLineLabel;
+                lastLineLabel = null;
+            }
+
+            var parsedLine = {
+                Label: curLineLabel,
+                DataSizeDeclaration: tokens[0],
+                Value: tokens[1]
+            };
+
+            parsedAndLabeled.push(parsedLine);
+        }
+        else if (tokens.length == 3) {
+            var parsedLine = {
+                Label: tokens[0],
+                DataSizeDeclaration: tokens[1],
+                Value: tokens[2]
+            };
+
+            parsedAndLabeled.push(parsedLine);
+        }
+    }
+
+    return parsedAndLabeled;
+}
+
+function validateDataLine(dataLine, tokens, lastLineLabel) {
+    if (tokens.length == 1) {
+        //label only:
+
+        if (lastLineLabel != null) {
+            //2 labels in a row:
+            throw "invalid data line: " + dataLine + " (2 labels in a row)";
+        }
+
+        if (!validateLabel(tokens[0])) {
+            throw "invalid data line: " + dataLine;
+        }
+    }
+    else if (tokens.length == 2) {
+        if (!validateDataSizeDeclaration(tokens[0]) || !validateValue(tokens[1])) {
+            throw "invalid data line: " + dataLine;
+        }
+    }
+    else if (tokens.length == 3) {
+        if (lastLineLabel != null) {
+            //2 labels in a row:
+            throw "invalid data line: " + dataLine + " (2 labels in a row)";
+        }
+        else if (!validateLabel(tokens[0]) || !validateDataSizeDeclaration(tokens[1]) || !validateValue(tokens[2])) {
+            //VALID:
+            throw "invalid data line: " + dataLine;
+        }
+    }
+    else {
+        throw "invalid data line: " + dataLine + " (expected 1, 2, or 3 tokens, but found " + tokens.length + " tokens)";
+    }
+}
+
+function parseDataSectionLine_OLD(dataSectionLine) {
     var retVal = {};
 
     var uncommented = StripComments(dataSectionLine);
     var whitespaceConverted = uncommented.replace(/\t/g, " "); //first char is a tab
     whitespaceConverted = whitespaceConverted.trim();
 
-    var split = whitespaceConverted.split(" ");
+    var tokens = whitespaceConverted.split(" ");
 
     var label = null;
     var foundWordDeclaration = false;
     var value = null;
-    for (var splitIndex = 0; splitIndex < split.length; splitIndex++) {
-        var curToken = split[splitIndex];
-        if (curToken == "") {
-            continue;
-        }
 
-        
-        if (curToken == ".word") {
-            foundWordDeclaration = true;
-        }
-        else if (splitIndex == split.length - 1) {
-            value = curToken;
+    if (tokens.length == 1) {
+        //label only:
+        if (validateLabel(tokens[0])) {
+            label = tokens[0];
         }
         else {
-            label = curToken;
+            retVal.IsError = true;
         }
     }
-
-    if ((!foundWordDeclaration || value == null) || (label != null && !label.endsWith(":"))) {
-        retVal.IsError = true;
-        retVal.SourceLine = dataSectionLine;
+    else if (tokens.length == 2) {
+        //declaration without label
+    }
+    else if (tokens.length == 3) {
+        //label and delaration
     }
     else {
-        retVal.IsError = false;
-        retVal.SourceLine = dataSectionLine;
-        retVal.Label = label;
-        retVal.Value = value;
+        retVal.IsError = true;
     }
 
     return retVal;
 }
 
-//returns the initial value of the PC register
-function LoadCode(code) {
-    var sections = GetTextAndDataSections(code);
-    return WriteTextAndDataToMemory(sections);
+function validateLabel(label) {
+    return label.endsWith(":");
+}
+
+function validateDataSizeDeclaration(size) {
+    return size == ".word";
+}
+
+function validateValue(value) {
+    return !isNaN(value);
 }
 
 //returns the initial value of the PC register
-function WriteTextAndDataToMemory(sections) {
-    //clear memory:
+function LoadCode(code) {
+    var sections = GetTextAndDataSections(code);
+
+    var parsedDataSectionLines = parseDataSectionLines(sections.DataSectionLines);
+
+    clearMemory();
+    var PCInitValue = writeDataSectionToMemory(parsedDataSectionLines);
+    writeCodeSectionToMemory(sections.TextSectionLines, PCInitValue);
+
+    return PCInitValue;
+}
+
+function initLabelDictionary(parsedDataSectionLines) {
+
+}
+
+function clearMemory() {
     for (var i = 0; i < memory.length; i++) {
         memory[i] = "";
     }
+}
 
-    //write data section
-    for (var i = 0; i < sections.DataSectionLines.length; i++) {
-        memory[i] = sections.DataSectionLines[i];
+//returns the next free memory address
+function writeDataSectionToMemory(parsedDataSectionLines) {
+    for (var i = 0; i < parsedDataSectionLines.length; i++) {
+        memory[i] = parsedDataSectionLines[i].Value;
     }
 
-    //write free space
-    const FREE_SPACE = 10; //number of words we want between end of data and start of program
-    var startIndex = sections.DataSectionLines.length;
-    for (var i = 0; i < FREE_SPACE.length; i++) {
-        memory[startIndex + i] = "";
-    }
-
-    //write text section
-    debugger;
-    var startIndex = sections.TextSectionLines.length + FREE_SPACE + 1; //note that here we know the starting value of the PC
-    var programCounterInitValue = startIndex * WORD_SIZE_IN_BYTES;
-    for (var i = 0; i < sections.TextSectionLines.length; i++) {
-        memory[startIndex + i] = sections.TextSectionLines[i];
-    }
-
-    //output to HTML controls:
     writeMemory(memory);
 
-    return programCounterInitValue;
+    return i;
+}
+
+function writeCodeSectionToMemory(codeLines, startIndex) {
+    for (var i = 0; i < codeLines.length; i++) {
+        memory[i + startIndex] = codeLines[i];
+    }
 }
 
 /*
