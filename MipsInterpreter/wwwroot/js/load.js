@@ -141,6 +141,25 @@ function removeBlankTokens(tokens) {
     });
 }
 
+function validateRegisterToken(textLine, token) {
+    if (!token.endsWith(",")) {
+        throw "invalid text line: " + textLine;
+    }
+    else {
+
+        if () {
+
+        }
+
+    }
+}
+
+function validateTextLine_LengthFour(textLine, tokens) {
+    if (tokens[0] == "add") {
+
+    }
+}
+
 function validateTextLine(dataLine, tokens, lastLineLabel) {
     /* SUPPORTED INSTRUCTIONS
      * add $d, $s, $t   #adds $s and $t and stores the result in $d
@@ -153,7 +172,7 @@ function validateTextLine(dataLine, tokens, lastLineLabel) {
      */
 
     if (tokens.length == 1) {
-
+        validateLabel(tokens[0], lastLineLabel)
     }
     else if (tokens.length == 4)
     {
