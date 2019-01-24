@@ -56,32 +56,45 @@ function StripComments(codeLine) {
     return retVal;
 }
 
+function parseTextSectionLines(textLines) {
+    return parseLines(textLines, validateTextLine, parseTextLine);
+}
+
 function parseDataSectionLines(dataLines) {
+    return parseLines(dataLines, validateDataLine, parseDataLine);
+}
+
+function parseLines(lines, validationFunc, parseFunc) {
+
     var parsedAndLabeled = [];
     var parsedIndex = 0;
     var lastLineLabel = null;
 
-    for (var i = 0; i < dataLines.length; i++) {
-        var uncommented = StripComments(dataLines[i]);
+    for (var i = 0; i < lines.length; i++) {
+        var uncommented = StripComments(lines[i]);
         var whitespaceConverted = uncommented.replace(/\t/g, " "); //\t is a tab
         whitespaceConverted = whitespaceConverted.trim();
 
         var tokens = whitespaceConverted.split(" ");
         tokens = removeBlankTokens(tokens);
 
-        validateDataLine(dataLines[i], tokens, lastLineLabel);
-        var parsedResult = parseDataLine(tokens, lastLineLabel);
+        validationFunc(lines[i], tokens, lastLineLabel);
+        var parsedResult = parseFunc(tokens, lastLineLabel);
 
         if (parsedResult.ParsedLine != null) {
             parsedAndLabeled.push(parsedResult.ParsedLine);
         }
-        
+
         if (parsedResult.ShouldUpdateLastLineLabel) {
             lastLineLabel = parsedResult.LastLineLabel;
         }
     }
 
     return parsedAndLabeled;
+}
+
+function parseTextLine(tokens, lastLineLabel) {
+
 }
 
 function parseDataLine(tokens, lastLineLabel) {
@@ -128,18 +141,36 @@ function removeBlankTokens(tokens) {
     });
 }
 
+function validateTextLine(dataLine, tokens, lastLineLabel) {
+    /* SUPPORTED INSTRUCTIONS
+     * add $d, $s, $t   #adds $s and $t and stores the result in $d
+     * 
+     * NOT YET SUPPORTED INSTRUCTIONS:
+     * lw $t, $s        #copies 1 word from memory address $s and stores it in $t
+     * lw $t offset($)  #copies 1 word from memory address ($s + offset) and stores it in $t
+     * lw $t label  #copies 1 word from memory address label and stores it in $t
+     * lw $t offset(label)  #copies 1 word from memory address (label + offset) and stores it in $t #check that this is actually supported in SPIM
+     */
+
+    if (tokens.length == 1) {
+
+    }
+    else if (tokens.length == 4)
+    {
+
+    }
+    else if (tokens.length == 5) {
+
+    }
+    else {
+        throw "invalid data line: " + dataLine + ". unexpected number of tokens: " + tokens.length + "";
+    }
+}
+
 function validateDataLine(dataLine, tokens, lastLineLabel) {
     if (tokens.length == 1) {
         //label only:
-
-        if (lastLineLabel != null) {
-            //2 labels in a row:
-            throw "invalid data line: " + dataLine + " (2 labels in a row)";
-        }
-
-        if (!validateLabel(tokens[0])) {
-            throw "invalid data line: " + dataLine;
-        }
+        validateLabel(tokens[0], lastLineLabel);
     }
     else if (tokens.length == 2) {
         if (!validateDataSizeDeclaration(tokens[0]) || !validateValue(tokens[1])) {
@@ -151,7 +182,7 @@ function validateDataLine(dataLine, tokens, lastLineLabel) {
             //2 labels in a row:
             throw "invalid data line: " + dataLine + " (2 labels in a row)";
         }
-        else if (!validateLabel(tokens[0]) || !validateDataSizeDeclaration(tokens[1]) || !validateValue(tokens[2])) {
+        else if (!validateLabel(tokens[0], lastLineLabel) || !validateDataSizeDeclaration(tokens[1]) || !validateValue(tokens[2])) {
             //VALID:
             throw "invalid data line: " + dataLine;
         }
@@ -161,8 +192,17 @@ function validateDataLine(dataLine, tokens, lastLineLabel) {
     }
 }
 
-function validateLabel(label) {
-    return label.endsWith(":");
+function validateLabel(label, lastLineLabel) {
+    if (lastLineLabel != null) {
+        //2 labels in a row:
+        throw "invalid data line: " + dataLine + " (2 labels in a row)";
+    }
+
+    if (!label.endsWith(":")) {
+        throw "invalid data line: " + dataLine;
+    }
+
+    return true;
 }
 
 function validateDataSizeDeclaration(size) {
