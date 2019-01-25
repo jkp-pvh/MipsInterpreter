@@ -42,9 +42,7 @@ function parseTextLine(tokens, lastLineLabel) {
         //label only:
         retVal.LastLineLabel = tokens[0];
         retVal.ShouldUpdateLastLineLabel = true;
-        retVal.ParsedLine = {
-            Label: tokens[0]
-        };
+        retVal.ParsedLine = null;
     }
     else if (tokens.length == 4) {
         var curLineLabel = null;

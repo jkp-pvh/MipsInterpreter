@@ -1,11 +1,24 @@
-﻿function writeMemory(memory) {
-    var divMemoryValues = $("#divMemoryValues")
+﻿function writeMemory(memory, startIndex = 0) {
 
-    var html = "<table cellspacing='0' cellpadding='0' style='border:solid 0px black'>";
-    html += "<thead>" +
-        "<th>Word</th> <th>Byte</th> <th>Data</th>"
-        "</thead>"
-    for (var i = 0; i < MEMORY_SIZE; i++) {
+    if (startIndex == 0) {
+        var allRows = $("#tblMemoryValues tr");
+        allRows.remove();
+
+        var headerRow = "<thead>" +
+            "<th>Word</th>" +
+            "<th>Byte</th>" +
+            "<th>Data</th>" +
+            "</thead>";
+
+        var tblMemoryValues = $("#tblMemoryValues");
+        tblMemoryValues.append(headerRow);
+    }
+    
+
+    var rowAppenderObj = $("#tblMemoryValues tr:last")
+
+    var html = "";
+    for (var i = startIndex; i < MEMORY_SIZE; i++) {
         html += "<tr>";
 
         html += "<td>";
@@ -23,9 +36,8 @@
 
         html += "</tr>";
     }
-    html += "</table>";
 
-    divMemoryValues.html(html);
+    rowAppenderObj.after(html);
 }
 
 function writeRegisters(registers) {
