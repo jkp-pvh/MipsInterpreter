@@ -36,11 +36,45 @@ function parseTextSectionLines(textLines) {
 }
 
 function parseTextLine(tokens, lastLineLabel) {
-    return {
-        ParsedLine: {
-            Foo: true
+    var retVal = {};
+
+    if (tokens.length == 1) {
+        //label only:
+        retVal.LastLineLabel = tokens[0];
+        retVal.ShouldUpdateLastLineLabel = true;
+        retVal.ParsedLine = {
+            Label: tokens[0]
+        };
+    }
+    else if (tokens.length == 4) {
+        var curLineLabel = null;
+        if (lastLineLabel != null) {
+            curLineLabel = lastLineLabel;
+            retVal.LastLineLabel = null;
+            retVal.ShouldUpdateLastLineLabel = true;
         }
-    };
+
+        if (IsArithmeticOpCode(tokens[0])) {
+            retVal.ParsedLine = {
+                Label: curLineLabel,
+                OpCode: tokens[0],
+                DestRegister: tokens[1],
+                SrcRegister1: tokens[2],
+                SrcRegister2: tokens[3],
+                DisplayValue: tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + tokens[3]
+            };
+        }
+        else {
+
+        }
+
+        
+    }
+    else if (tokens.length == 5) {
+
+    }
+
+    return retVal;
 }
 
 function parseDataLine(tokens, lastLineLabel) {
