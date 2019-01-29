@@ -38,13 +38,15 @@ function parseTextSectionLines(textLines) {
 function parseTextLine(tokens, lastLineLabel) {
     var retVal = {};
 
+    
+
     if (tokens.length == 1) {
         //label only:
         retVal.LastLineLabel = tokens[0];
         retVal.ShouldUpdateLastLineLabel = true;
         retVal.ParsedLine = null;
     }
-    else if (tokens.length == 4) {
+    else {
         var curLineLabel = null;
         if (lastLineLabel != null) {
             curLineLabel = lastLineLabel;
@@ -52,26 +54,45 @@ function parseTextLine(tokens, lastLineLabel) {
             retVal.ShouldUpdateLastLineLabel = true;
         }
 
-        if (IsArithmeticOpCode(tokens[0])) {
-            retVal.ParsedLine = {
-                Label: curLineLabel,
-                OpCode: tokens[0],
-                DestRegister: tokens[1],
-                SrcRegister1: tokens[2],
-                SrcRegister2: tokens[3],
-                DisplayValue: tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + tokens[3]
-            };
+        if (tokens.length == 3) {
+            if (curLineLabel == null) {
+                retVal.ParsedLine = {
+                    Label = curLineLabel,
+                    OpCode = tokens[0],
+                    DestRegister = tokens[1],
+                    ImmediateValue = tokens[2],
+                    DisplayValue = tokens[0] + " " + tokens[1] + " " + tokens[2]
+                };
+            }
+            else {
+                //todo: handle case of label + 2-token instruction
+            }
         }
-        else {
+        else if (tokens.length == 4) {
+            if (curLineLabel == null) {
+                if (IsArithmeticOpCode(tokens[0])) {
+                    retVal.ParsedLine = {
+                        Label: curLineLabel,
+                        OpCode: tokens[0],
+                        DestRegister: tokens[1],
+                        SrcRegister1: tokens[2],
+                        SrcRegister2: tokens[3],
+                        DisplayValue: tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + tokens[3]
+                    };
+                }
+                else {
+
+                }
+            }
+            else {
+                //todo: handle the case of label + 3-token instruction
+            }
+        }
+        else if (tokens.length == 5) {
 
         }
-
-        
     }
-    else if (tokens.length == 5) {
-
-    }
-
+    
     return retVal;
 }
 

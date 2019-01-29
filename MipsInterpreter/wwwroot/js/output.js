@@ -1,4 +1,4 @@
-﻿function writeMemory(memory, startIndex = 0) {
+﻿function printMemoryToScreen(memory, startIndex = 0) {
 
     if (startIndex == 0) {
         var allRows = $("#tblMemoryValues tr");
@@ -40,7 +40,7 @@
     rowAppenderObj.after(html);
 }
 
-function writeRegisters(registers) {
+function printRegistersToScreen(registers) {
     var divRegisterValues = $("#divRegisterValues")
 
     var html = "<table cellspacing='0' cellpadding='0' style='border:solid 0px black'>";

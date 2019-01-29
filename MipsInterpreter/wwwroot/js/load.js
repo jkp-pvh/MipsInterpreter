@@ -9,6 +9,8 @@ function LoadCode(code) {
     var PCInitValue = writeDataSectionToMemory(parsedDataSectionLines);
     writeTextSectionToMemory(parsedTextSectionLines, PCInitValue);
 
+    printMemoryToScreen(memory);
+
     return PCInitValue;
 }
 
@@ -28,8 +30,6 @@ function writeDataSectionToMemory(parsedDataSectionLines) {
         memory[i] = parsedDataSectionLines[i].Value;
     }
 
-    writeMemory(memory);
-
     return i;
 }
 
@@ -37,8 +37,6 @@ function writeTextSectionToMemory(parsedTextSectionLines, startIndex) {
     for (var i = 0; i < parsedTextSectionLines.length; i++) {
         memory[i + startIndex] = parsedTextSectionLines[i].DisplayValue;
     }
-
-    writeMemory(memory, startIndex);
 }
 
 /*

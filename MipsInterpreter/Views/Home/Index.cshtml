@@ -45,8 +45,8 @@
             registers = initRegisters();
             memory = initMemory();
 
-            writeMemory(memory);
-            writeRegisters(registers);
+            printMemoryToScreen(memory);
+            printRegistersToScreen(registers);
 
             $("#btnLoadCode").click(btnLoadCode_Click);
         });
@@ -67,7 +67,7 @@
                 var programCounterInitValue = LoadCode(code);
                 registers["$pc"] = programCounterInitValue;
 
-                writeRegisters(registers);
+                printRegistersToScreen(registers);
             }
             catch (e) {
                 alert(e);

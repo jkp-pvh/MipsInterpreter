@@ -18,17 +18,16 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
      * NOT YET SUPPORTED INSTRUCTIONS:
      * 
      * 2 TOKENS
-     *  lw
-     *  la
-     *  li
-     *  sw
      *  b
      *  j
      *  jr
      *  jal
      * 
      * 3 TOKENS
-     *  [NO INSTRUCTIONS]
+     *  li
+     *  lw
+     *  sw
+     *  la
      * 
      * 4 TOKENS
      *  add
@@ -48,18 +47,45 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
      */
 
     if (tokens.length == 1) {
-        validateLabel(tokens[0], lastLineLabel)
+        validateLabel(textLine, tokens[0], lastLineLabel)
+    }
+    else if (tokens.length == 3) {
+        validateTextLine_LengthThree(textLine, tokens, 0);
     }
     else if (tokens.length == 4) {
-        //there are no instructions with 3 tokens, so it's not possible for this line to be a label plus 3-token instruction
-        validateTextLine_LengthFour(textLine, tokens, 0);   
+        if (IsLabel(tokens[0])) {
+            //todo: validate length 3
+        }
+        else {
+            //there are no instructions with 3 tokens, so it's not possible for this line to be a label plus 3-token instruction
+            validateTextLine_LengthFour(textLine, tokens, 0);   
+        }
+        
 
     }
     else if (tokens.length == 5) {
-
+        //todo: validate first token as label, then the rest of the tokens as a text lineof length 4
     }
     else {
         throw "invalid text line: " + dataLine + ". unexpected number of tokens: " + tokens.length + "";
+    }
+}
+
+function validateTextLine_LengthThree(textLine, tokens, startIndex) {
+    validateOpCode_Length3(textLine, tokens[startIndex]);
+    validateRegisterToken(textLine, tokens[startIndex + 1]);
+    validateImmediate(textLine, tokens[startIndex + 2]);
+}
+
+function validateOpCode_Length3(textLine, opCode) {
+    switch (opCode) {
+        case "li":
+        case "lw":
+        case "sw":
+        case "la":
+            break;
+        default:
+            throw "invalid text line: " + tetLine + ". (invalid op code: " + opCode + ")";
     }
 }
 
@@ -74,6 +100,14 @@ function validateTextLine_LengthFour(textLine, tokens, startIndex) {
     else {
         //beq is the only non-arithmetic 4-token instruction
     }
+}
+
+function validateImmediate(textLine, immediateValue) {
+    if (!Number.isInteger(immediateValue)) {
+        throw "invalid text line: " + textLine + ". (invalid immediate value: " + immediateValue + ")";
+    }
+
+    return true;
 }
 
 function validateRegisterToken(textLine, tokens, index) {
@@ -129,7 +163,7 @@ function validateOpCode_Length4(textLine, opCode) {
 function validateDataLine(dataLine, tokens, lastLineLabel) {
     if (tokens.length == 1) {
         //label only:
-        validateLabel(tokens[0], lastLineLabel);
+        validateLabel(dataLine, tokens[0], lastLineLabel);
     }
     else if (tokens.length == 2) {
         if (!validateDataSizeDeclaration(tokens[0]) || !validateValue(tokens[1])) {
@@ -141,7 +175,7 @@ function validateDataLine(dataLine, tokens, lastLineLabel) {
             //2 labels in a row:
             throw "invalid data line: " + dataLine + " (2 labels in a row)";
         }
-        else if (!validateLabel(tokens[0], lastLineLabel) || !validateDataSizeDeclaration(tokens[1]) || !validateValue(tokens[2])) {
+        else if (!validateLabel(dataLine, tokens[0], lastLineLabel) || !validateDataSizeDeclaration(tokens[1]) || !validateValue(tokens[2])) {
             //VALID:
             throw "invalid data line: " + dataLine;
         }
@@ -151,17 +185,21 @@ function validateDataLine(dataLine, tokens, lastLineLabel) {
     }
 }
 
-function validateLabel(label, lastLineLabel) {
+function validateLabel(codeLine, label, lastLineLabel) {
     if (lastLineLabel != null) {
         //2 labels in a row:
-        throw "invalid data line: " + dataLine + " (2 labels in a row)";
+        throw "invalid line: " + codeLine + " (2 labels in a row)";
     }
 
-    if (!label.endsWith(":")) {
-        throw "invalid data line: " + dataLine;
+    if (!IsLabel(label)) {
+        throw "invalid line: " + codeLine;
     }
 
     return true;
+}
+
+function IsLabel(label) {
+    return label.endsWith(":"); //todo: there must be at least 1 char before the ':', and it can't be a reserved char like '$' or ','. labels must be unique.
 }
 
 function validateDataSizeDeclaration(size) {
