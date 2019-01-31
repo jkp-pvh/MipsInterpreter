@@ -1,15 +1,15 @@
-﻿function validateRegisterToken(textLine, token) {
-    if (!token.endsWith(",")) {
-        throw "invalid text line: " + textLine;
-    }
-    else {
+﻿//function validateRegisterToken(textLine, token) {
+//    if (!token.endsWith(",")) {
+//        throw "invalid text line: " + textLine;
+//    }
+//    else {
 
-        if (true) {
+//        if (true) {
 
-        }
+//        }
 
-    }
-}
+//    }
+//}
 
 function validateTextLine(textLine, tokens, lastLineLabel) {
     /* SUPPORTED INSTRUCTIONS
@@ -73,7 +73,7 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
 
 function validateTextLine_LengthThree(textLine, tokens, startIndex) {
     validateOpCode_Length3(textLine, tokens[startIndex]);
-    validateRegisterToken(textLine, tokens[startIndex + 1]);
+    validateRegisterToken(textLine, tokens, startIndex + 1);
     validateImmediate(textLine, tokens[startIndex + 2]);
 }
 
@@ -103,7 +103,11 @@ function validateTextLine_LengthFour(textLine, tokens, startIndex) {
 }
 
 function validateImmediate(textLine, immediateValue) {
-    if (!Number.isInteger(immediateValue)) {
+
+    try {
+        var intValue = parseInt(immediateValue);
+    }
+    catch{
         throw "invalid text line: " + textLine + ". (invalid immediate value: " + immediateValue + ")";
     }
 

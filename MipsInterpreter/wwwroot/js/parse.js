@@ -38,8 +38,6 @@ function parseTextSectionLines(textLines) {
 function parseTextLine(tokens, lastLineLabel) {
     var retVal = {};
 
-    
-
     if (tokens.length == 1) {
         //label only:
         retVal.LastLineLabel = tokens[0];
@@ -57,13 +55,13 @@ function parseTextLine(tokens, lastLineLabel) {
         if (tokens.length == 3) {
             if (curLineLabel == null) {
                 retVal.ParsedLine = {
-                    Label = curLineLabel,
-                    OpCode = tokens[0],
-                    DestRegister = tokens[1],
-                    ImmediateValue = tokens[2],
-                    DisplayValue = tokens[0] + " " + tokens[1] + " " + tokens[2]
+                    Label: curLineLabel,
+                    OpCode: tokens[0],
+                    DestRegister: tokens[1],
+                    ImmediateValue: tokens[2],
+                    DisplayValue: tokens[0] + " " + tokens[1] + " " + tokens[2]
                 };
-            }
+            } 
             else {
                 //todo: handle case of label + 2-token instruction
             }
