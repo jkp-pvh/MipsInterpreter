@@ -27,7 +27,7 @@ function clearMemory() {
 //returns the next free memory address
 function writeDataSectionToMemory(parsedDataSectionLines) {
     for (var i = 0; i < parsedDataSectionLines.length; i++) {
-        memory[i] = parsedDataSectionLines[i].Value;
+        memory[i] = parsedDataSectionLines[i];
     }
 
     return i;
@@ -35,7 +35,7 @@ function writeDataSectionToMemory(parsedDataSectionLines) {
 
 function writeTextSectionToMemory(parsedTextSectionLines, startIndex) {
     for (var i = 0; i < parsedTextSectionLines.length; i++) {
-        memory[i + startIndex] = parsedTextSectionLines[i].DisplayValue;
+        memory[i + startIndex] = parsedTextSectionLines[i];
     }
 }
 

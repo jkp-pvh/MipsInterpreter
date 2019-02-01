@@ -53,37 +53,53 @@ function parseTextLine(tokens, lastLineLabel) {
         }
 
         if (tokens.length == 3) {
-            if (curLineLabel == null) {
-                retVal.ParsedLine = {
-                    Label: curLineLabel,
-                    OpCode: tokens[0],
-                    DestRegister: tokens[1],
-                    ImmediateValue: tokens[2],
-                    DisplayValue: tokens[0] + " " + tokens[1] + " " + tokens[2]
-                };
-            } 
-            else {
+
+            if (IsLabel(tokens[0])) {
                 //todo: handle case of label + 2-token instruction
+            }
+            else {
+                //retVal.ParsedLine = {
+                //    Label: curLineLabel,
+                //    OpCode: tokens[0],
+                //    DestRegister: tokens[1],
+                //    ImmediateValue: tokens[2],
+                //    DisplayValue: tokens[0] + " " + tokens[1] + " " + tokens[2]
+                //};
+
+                retVal.ParsedLine = new LI();
+                retVal.ParsedLine.Label = curLineLabel;
+                retVal.ParsedLine.OpCode = tokens[0];
+                retVal.ParsedLine.DestRegister = parseRegisterToken(tokens[1]);
+                retVal.ParsedLine.ImmediateValue = tokens[2];
+                retVal.ParsedLine.DisplayValue = tokens[0] + " " + tokens[1] + " " + tokens[2];
             }
         }
         else if (tokens.length == 4) {
-            if (curLineLabel == null) {
-                if (IsArithmeticOpCode(tokens[0])) {
-                    retVal.ParsedLine = {
-                        Label: curLineLabel,
-                        OpCode: tokens[0],
-                        DestRegister: tokens[1],
-                        SrcRegister1: tokens[2],
-                        SrcRegister2: tokens[3],
-                        DisplayValue: tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + tokens[3]
-                    };
-                }
-                else {
 
-                }
+            if (IsLabel(tokens[0])) {
+                //todo: handle the case of label + 3-token instruction
             }
             else {
-                //todo: handle the case of label + 3-token instruction
+                if (IsArithmeticOpCode(tokens[0])) {
+                    //retVal.ParsedLine = new LI {
+                    //    Label: curLineLabel,
+                    //    OpCode: tokens[0],
+                    //    DestRegister: tokens[1],
+                    //    SrcRegister1: tokens[2],
+                    //    SrcRegister2: tokens[3],
+                    //    DisplayValue: tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + tokens[3]
+                    //};
+                    retVal.ParsedLine = new LI();
+                    retVal.ParsedLine.Label = curLineLabel;
+                    retVal.ParsedLine.OpCode = tokens[0];
+                    retVal.ParsedLine.DestRegister = tokens[1];
+                    retVal.ParsedLine.SrcRegister1 = tokens[2];
+                    retVal.ParsedLine.SrcRegister2 = tokens[3];
+                    retVal.ParsedLine.DisplayValue = tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + tokens[3]
+                }
+                else {
+                    //todo: handle BEQ instruction
+                }
             }
         }
         else if (tokens.length == 5) {
@@ -92,6 +108,10 @@ function parseTextLine(tokens, lastLineLabel) {
     }
     
     return retVal;
+}
+
+function parseRegisterToken(token) {
+    return token.replace(",", "");
 }
 
 function parseDataLine(tokens, lastLineLabel) {
@@ -115,7 +135,8 @@ function parseDataLine(tokens, lastLineLabel) {
         retVal.ParsedLine = {
             Label: curLineLabel,
             DataSizeDeclaration: tokens[0],
-            Value: tokens[1]
+            Value: tokens[1],
+            DisplayValue: tokens[1]
         };
     }
     else if (tokens.length == 3) {
@@ -123,7 +144,8 @@ function parseDataLine(tokens, lastLineLabel) {
         retVal.ParsedLine = {
             Label: tokens[0],
             DataSizeDeclaration: tokens[1],
-            Value: tokens[2]
+            Value: tokens[2],
+            DisplayValue: tokens[2]
         };
 
         retVal.ShouldUpdateLastLineLabel = false;

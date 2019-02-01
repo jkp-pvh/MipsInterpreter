@@ -15,6 +15,12 @@
         }
     </style>
 
+    <script src="~/js/classes.js">
+    </script>
+
+    <script src="~/js/execute.js">
+    </script>
+
     <script src="js/init.js">
     </script>
 
@@ -49,7 +55,13 @@
             printRegistersToScreen(registers);
 
             $("#btnLoadCode").click(btnLoadCode_Click);
+            $("#btnStep").click(btnStep_Click);
         });
+
+        function btnStep_Click() {
+
+            step(registers, memory);
+        }
 
         function testWordSize() {
             //i know that JS ints are 32 bits because this int keeps doubling until it gets to 31 shifts, where it becomes negative, then after 32 shifts it becomes 0
@@ -73,6 +85,9 @@
                 alert(e);
             }
         }
+
+        //HOW TO CHECK an object's type:
+        //foo instanceof Foo; 
 
     </script>
 </head>
@@ -104,7 +119,7 @@
                 <input type="button" id="btnLoadCode" value="load code" />
                 <br />
                 <br />
-                <input type="button" value="step" />
+                <input type="button" id="btnStep" value="step" />
             </div>
         </div>
     </body>

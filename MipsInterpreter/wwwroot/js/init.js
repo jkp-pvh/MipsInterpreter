@@ -40,8 +40,14 @@ function initRegisters() {
 
 function initMemory() {
     var memory = [];
+
     for (var i = 0; i < MEMORY_SIZE; i++) {
-        memory.push("");
+
+        var parsedLine = {
+            DisplayValue: ""
+        };
+
+        memory.push(parsedLine);
     }
 
     return memory;

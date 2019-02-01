@@ -31,7 +31,7 @@
         html += "</td>";
 
         html += "<td>";
-        html += "<input type='text' value='" + memory[i] + "' />";
+        html += "<input type='text' value='" + memory[i].DisplayValue + "' />";
         html += "</td>";
 
         html += "</tr>";
