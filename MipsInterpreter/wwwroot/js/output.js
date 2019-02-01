@@ -54,8 +54,9 @@ function printRegistersToScreen(registers) {
         html += key
         html += "</td>";
 
-        html += "<td>";
-        html += registers[key];
+        html += "<td";
+        html += registers[key].HasChanged ? " class='registerChanged'> " : ">";
+        html += registers[key].DisplayValue;
         html += "</td>";
 
         html += "</tr>";

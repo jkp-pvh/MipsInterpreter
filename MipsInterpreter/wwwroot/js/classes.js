@@ -1,10 +1,17 @@
 ﻿class LI {
-    constructor(label, opCode, destRegister, ImmediateValue, DisplayValue) {
+    constructor(label, opCode, destRegister, immediateValue, displayValue) {
         this.Label = label;
+        this.OpCode = opCode;
+        this.DestRegister = destRegister;
+        this.ImmediateValue = immediateValue;
+        this.DisplayValue = displayValue;
     }
-    //Label = "";
-    //OpCode = "";
-    //DestRegister = "";
-    //ImmediateValue = "";
-    //DisplayValue = ""
 }
+
+class Register {
+    constructor(displayValue, hasChanged) {
+        this.DisplayValue = displayValue;
+        this.HasChanged = hasChanged;
+    }
+}
+

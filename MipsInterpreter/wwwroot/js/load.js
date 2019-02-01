@@ -20,7 +20,7 @@ function initLabelDictionary(parsedDataSectionLines) {
 
 function clearMemory() {
     for (var i = 0; i < memory.length; i++) {
-        memory[i] = "";
+        memory[i] = { DisplayValue: "" };
     }
 }
 
@@ -38,6 +38,12 @@ function writeTextSectionToMemory(parsedTextSectionLines, startIndex) {
         memory[i + startIndex] = parsedTextSectionLines[i];
     }
 }
+
+//function clearRemainingMemory(startIndex) {
+//    for (var i = startIndex; i < memory.length; i++) {
+//        memory[i].ParsedLine.DisplayValue = "";
+//    }
+//}
 
 /*
  PARSING

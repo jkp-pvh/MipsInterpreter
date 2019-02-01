@@ -58,20 +58,7 @@ function parseTextLine(tokens, lastLineLabel) {
                 //todo: handle case of label + 2-token instruction
             }
             else {
-                //retVal.ParsedLine = {
-                //    Label: curLineLabel,
-                //    OpCode: tokens[0],
-                //    DestRegister: tokens[1],
-                //    ImmediateValue: tokens[2],
-                //    DisplayValue: tokens[0] + " " + tokens[1] + " " + tokens[2]
-                //};
-
-                retVal.ParsedLine = new LI();
-                retVal.ParsedLine.Label = curLineLabel;
-                retVal.ParsedLine.OpCode = tokens[0];
-                retVal.ParsedLine.DestRegister = parseRegisterToken(tokens[1]);
-                retVal.ParsedLine.ImmediateValue = tokens[2];
-                retVal.ParsedLine.DisplayValue = tokens[0] + " " + tokens[1] + " " + tokens[2];
+                Parse3TokenInstruction(tokens, retVal, curLineLabel);
             }
         }
         else if (tokens.length == 4) {
@@ -81,21 +68,7 @@ function parseTextLine(tokens, lastLineLabel) {
             }
             else {
                 if (IsArithmeticOpCode(tokens[0])) {
-                    //retVal.ParsedLine = new LI {
-                    //    Label: curLineLabel,
-                    //    OpCode: tokens[0],
-                    //    DestRegister: tokens[1],
-                    //    SrcRegister1: tokens[2],
-                    //    SrcRegister2: tokens[3],
-                    //    DisplayValue: tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + tokens[3]
-                    //};
-                    retVal.ParsedLine = new LI();
-                    retVal.ParsedLine.Label = curLineLabel;
-                    retVal.ParsedLine.OpCode = tokens[0];
-                    retVal.ParsedLine.DestRegister = tokens[1];
-                    retVal.ParsedLine.SrcRegister1 = tokens[2];
-                    retVal.ParsedLine.SrcRegister2 = tokens[3];
-                    retVal.ParsedLine.DisplayValue = tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + tokens[3]
+                    //todo: parse arithmetic op code
                 }
                 else {
                     //todo: handle BEQ instruction
@@ -108,6 +81,12 @@ function parseTextLine(tokens, lastLineLabel) {
     }
     
     return retVal;
+}
+
+function Parse3TokenInstruction(tokens, retVal, curLineLabel) {
+    var displayValue = tokens[0] + " " + tokens[1] + " " + tokens[2];
+    var destRegister = parseRegisterToken(tokens[1]);
+    retVal.ParsedLine = new LI(curLineLabel, tokens[0], destRegister, tokens[2], displayValue);
 }
 
 function parseRegisterToken(token) {
