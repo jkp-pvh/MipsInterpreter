@@ -1,16 +1,4 @@
-﻿//function validateRegisterToken(textLine, token) {
-//    if (!token.endsWith(",")) {
-//        throw "invalid text line: " + textLine;
-//    }
-//    else {
-
-//        if (true) {
-
-//        }
-
-//    }
-//}
-
+﻿
 function validateTextLine(textLine, tokens, lastLineLabel) {
     /* SUPPORTED INSTRUCTIONS
      * add $d, $s, $t   #adds $s and $t and stores the result in $d
@@ -67,7 +55,7 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
         //todo: validate first token as label, then the rest of the tokens as a text lineof length 4
     }
     else {
-        throw "invalid text line: " + dataLine + ". unexpected number of tokens: " + tokens.length + "";
+        throw generateErrorMessage(textLine) + " (unexpected number of tokens: " + tokens.length + ")";
     }
 }
 
@@ -85,7 +73,7 @@ function validateOpCode_Length3(textLine, opCode) {
         case "la":
             break;
         default:
-            throw "invalid text line: " + tetLine + ". (invalid op code: " + opCode + ")";
+            throw generateErrorMessage(textLine) + " (invalid op code: " + opCode + ")";
     }
 }
 
@@ -108,7 +96,7 @@ function validateImmediate(textLine, immediateValue) {
         var intValue = parseInt(immediateValue);
     }
     catch{
-        throw "invalid text line: " + textLine + ". (invalid immediate value: " + immediateValue + ")";
+        throw generateErrorMessage(textLine) + " (invalid immediate value: " + immediateValue + ")";
     }
 
     return true;
@@ -117,20 +105,19 @@ function validateImmediate(textLine, immediateValue) {
 function validateRegisterToken(textLine, tokens, index) {
 
     if (!tokens[index].startsWith("$")) {
-        throw new "invalid text line: " + textLine + ". (invalid register: " + tokens[index] + ")";
+        throw new generateErrorMessage(textLine) + " (register: '" + tokens[index] + "' should start with $)";
     }
 
     if (index != tokens.length - 1) {
         if (!tokens[index].endsWith(",")) {
-            throw new "invalid text line: " + textLine + ". (invalid register: " + tokens[index] + ")";
+            //throw new generateErrorMessage(textLine) + " (register '" + tokens[index] + "' should end with a comma)";
+            throw generateErrorMessage(textLine) + " (register '" + tokens[index] + "' should end with a comma)";
         }
     }
 
-    //var strippedToken = tokens[index].replace("$", "");
     var strippedToken = tokens[index].replace(",", "");
-
-    if (!registers.hasOwnProperty(strippedToken)) {
-        throw "invalid text line: " + textLine + ". (invalid register: " + registerNoComma + ")";
+    if (!registers.hasOwnProperty(strippedToken)) { //if the registers collection does not contain the key strippedToken:
+        throw generateErrorMessage(textLine) + " (no such register: '" + strippedToken + "')";
     }
 
     return true;
@@ -160,7 +147,7 @@ function validateOpCode_Length4(textLine, opCode) {
         case "beq":
             break;
         default:
-            throw "invalid text line: " + textLine + ". (invalid op code: " + opCode + ")";
+            throw generateErrorMessage(textLine) + " (invalid op code: " + opCode + ", or this opcode does not use 4 tokens)";
     };
 }
 
@@ -171,32 +158,33 @@ function validateDataLine(dataLine, tokens, lastLineLabel) {
     }
     else if (tokens.length == 2) {
         if (!validateDataSizeDeclaration(tokens[0]) || !validateValue(tokens[1])) {
-            throw "invalid data line: " + dataLine;
+            throw generateErrorMessage(dataLine);
         }
     }
     else if (tokens.length == 3) {
         if (lastLineLabel != null) {
             //2 labels in a row:
-            throw "invalid data line: " + dataLine + " (2 labels in a row)";
+            throw generateErrorMessage(dataLine) + " (2 labels in a row)";
         }
         else if (!validateLabel(dataLine, tokens[0], lastLineLabel) || !validateDataSizeDeclaration(tokens[1]) || !validateValue(tokens[2])) {
             //VALID:
-            throw "invalid data line: " + dataLine;
+            throw generateErrorMessage(dataLine);
         }
     }
     else {
-        throw "invalid data line: " + dataLine + " (expected 1, 2, or 3 tokens, but found " + tokens.length + " tokens)";
+        
+        throw generateErrorMessage(dataLine) + " (expected 1, 2, or 3 tokens, but found " + tokens.length + " tokens)";
     }
 }
 
 function validateLabel(codeLine, label, lastLineLabel) {
     if (lastLineLabel != null) {
         //2 labels in a row:
-        throw "invalid line: " + codeLine + " (2 labels in a row)";
+        throw generateErrorMessage(codeLine) + " (2 labels in a row)";
     }
 
     if (!IsLabel(label)) {
-        throw "invalid line: " + codeLine;
+        throw generateErrorMessage(codeLine) + " (missing colon after label)";
     }
 
     return true;
@@ -213,3 +201,17 @@ function validateDataSizeDeclaration(size) {
 function validateValue(value) {
     return !isNaN(value);
 }
+
+function generateErrorMessage(codeLine){
+    return "invalid line: '" + codeLine + "'"
+}
+
+function generateInvalidOpCodeMessage(codeLine){
+    
+}
+
+/*
+TODO:
+ * validate against empty file (or missing .data/.text declaration). currently shows no error message and doesn't do anything.
+ * enter this data line: '        .word   asd'. You get an error message, but not the expected one. (I have a special case for invalid literal value).
+*/

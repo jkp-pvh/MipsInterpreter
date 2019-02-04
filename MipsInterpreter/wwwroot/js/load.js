@@ -38,20 +38,3 @@ function writeTextSectionToMemory(parsedTextSectionLines, startIndex) {
         memory[i + startIndex] = parsedTextSectionLines[i];
     }
 }
-
-//function clearRemainingMemory(startIndex) {
-//    for (var i = startIndex; i < memory.length; i++) {
-//        memory[i].ParsedLine.DisplayValue = "";
-//    }
-//}
-
-/*
- PARSING
-    * remove all comments
-    * separate data section from code
-        * validate data section
-        * validate code section
-        * load data & code into memory
-    * ready to step
- 
- */

@@ -58,7 +58,7 @@ function parseTextLine(tokens, lastLineLabel) {
                 //todo: handle case of label + 2-token instruction
             }
             else {
-                Parse3TokenInstruction(tokens, retVal, curLineLabel);
+                ParseInstruction_LengthThree(tokens, retVal, curLineLabel);
             }
         }
         else if (tokens.length == 4) {
@@ -83,7 +83,7 @@ function parseTextLine(tokens, lastLineLabel) {
     return retVal;
 }
 
-function Parse3TokenInstruction(tokens, retVal, curLineLabel) {
+function ParseInstruction_LengthThree(tokens, retVal, curLineLabel) {
     var displayValue = tokens[0] + " " + tokens[1] + " " + tokens[2];
     var destRegister = parseRegisterToken(tokens[1]);
     retVal.ParsedLine = new LI(curLineLabel, tokens[0], destRegister, tokens[2], displayValue);
