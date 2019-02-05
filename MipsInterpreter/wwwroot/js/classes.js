@@ -1,4 +1,15 @@
-﻿class LI {
+﻿class ArithmeticInstruction{
+    constructor(label, opCode, destRegister, sourceRegister1, sourceRegister2, displayValue){
+        this.Label = label;
+        this.OpCode = opCode;
+        this.DestRegister = destRegister;
+        this.SourceRegister1 = sourceRegister1;
+        this.SourceRegister2 = sourceRegister2;
+        this.DisplayValue = displayValue;
+    }
+}
+
+class LoadImmediate {
     constructor(label, opCode, destRegister, immediateValue, displayValue) {
         this.Label = label;
         this.OpCode = opCode;

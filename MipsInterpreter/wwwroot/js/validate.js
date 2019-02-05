@@ -12,20 +12,25 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
      *  jal
      * 
      * 3 TOKENS
+     *  label + 2-token instruction
+     * 
      *  li
      *  lw
      *  sw
      *  la
      * 
      * 4 TOKENS
+     *  label + 3-token instruction
+     * 
      *  add
      *  sub
-     *  mult
-     *  div
+     *  mult - modifed
+     *  div - modified
+     *  mod - new
      *  beq
      *  
      * 5 TOKENS
-     *  label + 4-param instruction
+     *  label + 4-token instruction
      * 
      * ALL FORMS OF lw:
      * lw $t, $s        #copies 1 word from memory address $s and stores it in $t
