@@ -47,6 +47,7 @@
 
         var registers = null;
         var memory = null;
+        var labels = null;
 
         $(document).ready(function () {
             registers = initRegisters();
@@ -61,7 +62,7 @@
 
         function btnStep_Click() {
 
-            step(registers, memory);
+            step(registers, memory, labels);
         }
 
         function testWordSize() {

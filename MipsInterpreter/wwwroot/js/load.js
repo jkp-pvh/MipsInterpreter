@@ -5,6 +5,8 @@ function LoadCode(code) {
     var parsedDataSectionLines = parseDataSectionLines(sections.DataSectionLines);
     var parsedTextSectionLines = parseTextSectionLines(sections.TextSectionLines);
 
+    labels = parseLabels(parsedDataSectionLines, parsedTextSectionLines);
+
     clearMemory();
     var PCInitValue = writeDataSectionToMemory(parsedDataSectionLines);
     writeTextSectionToMemory(parsedTextSectionLines, PCInitValue);

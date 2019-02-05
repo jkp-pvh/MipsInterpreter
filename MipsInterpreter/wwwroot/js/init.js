@@ -52,3 +52,4 @@ function initMemory() {
 
     return memory;
 }
+

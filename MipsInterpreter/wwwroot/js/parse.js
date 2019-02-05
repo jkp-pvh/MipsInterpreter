@@ -208,3 +208,32 @@ function GetTextAndDataSections(code) {
 
     return retVal;
 }
+
+function parseLabels(dataLines, textLines){
+    var labels = {};   
+    
+    for(var i=0; i<dataLines.length; i++){
+        var curLabel = dataLines[i].Label;
+        if(curLabel != null){
+            if(labels.hasOwnProperty(curLabel)){
+                throw "duplicate label: '" + curLabel + "'";
+            }
+
+            labels[curLabel] = i;
+        }
+    }
+
+    for(var i=0; i<textLines.length; i++){
+        var curLabel = textLines[i].Label;
+        if(curLabel != null){
+
+            if(labels.hasOwnProperty(curLabel)){
+                throw "duplicate label: '" + curLabel + "'";
+            }
+            
+            labels[curLabel] = i + dataLines.length;
+        }
+    }
+
+    return labels;
+}

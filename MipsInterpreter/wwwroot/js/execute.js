@@ -1,4 +1,4 @@
-﻿function step(registers, memory) {
+﻿function step(registers, memory, labels) {
     clearRegistersChangedFlag(registers);
 
     var instrAddress = parseInt(registers["$pc"].DisplayValue);
