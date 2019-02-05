@@ -42,7 +42,11 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
     if (tokens.length == 1) {
         validateLabel(textLine, tokens[0], lastLineLabel)
     }
+    else if(tokens.length == 2){
+        validateTextLine_LengthTwo(textLine, tokens, 0);
+    }
     else if (tokens.length == 3) {
+        //todo: this could be a label + 2-token instruction
         validateTextLine_LengthThree(textLine, tokens, 0);
     }
     else if (tokens.length == 4) {
@@ -53,8 +57,6 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
             //there are no instructions with 3 tokens, so it's not possible for this line to be a label plus 3-token instruction
             validateTextLine_LengthFour(textLine, tokens, 0);   
         }
-        
-
     }
     else if (tokens.length == 5) {
         //todo: validate first token as label, then the rest of the tokens as a text lineof length 4
@@ -64,10 +66,24 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
     }
 }
 
+function validateTextLine_LengthTwo(textLine, tokens, startIndex){
+    validateOpCode_Length2(textLine, tokens[startIndex]);
+    //no way to validate label reference yet. we have to first do 1 pass of the whole file.
+}
+
 function validateTextLine_LengthThree(textLine, tokens, startIndex) {
     validateOpCode_Length3(textLine, tokens[startIndex]);
     validateRegisterToken(textLine, tokens, startIndex + 1);
     validateImmediate(textLine, tokens[startIndex + 2]);
+}
+
+function validateOpCode_Length2(textLine, opCode) {
+    switch (opCode) {
+        case "j":
+            break;
+        default:
+            throw generateErrorMessage(textLine) + " (invalid op code: " + opCode + ", or expected 2 tokens)";
+    }
 }
 
 function validateOpCode_Length3(textLine, opCode) {
@@ -110,12 +126,11 @@ function validateImmediate(textLine, immediateValue) {
 function validateRegisterToken(textLine, tokens, index) {
 
     if (!tokens[index].startsWith("$")) {
-        throw new generateErrorMessage(textLine) + " (register: '" + tokens[index] + "' should start with $)";
+        throw generateErrorMessage(textLine) + " (register: '" + tokens[index] + "' should start with $)";
     }
 
     if (index != tokens.length - 1) {
         if (!tokens[index].endsWith(",")) {
-            //throw new generateErrorMessage(textLine) + " (register '" + tokens[index] + "' should end with a comma)";
             throw generateErrorMessage(textLine) + " (register '" + tokens[index] + "' should end with a comma)";
         }
     }
@@ -205,6 +220,16 @@ function validateDataSizeDeclaration(size) {
 
 function validateValue(value) {
     return !isNaN(value);
+}
+
+function validateLabelReferences(labels, codeLines){
+    for(var i = 0; i < codeLines.length; i++){
+        if(codeLines[i] instanceof JumpInstruction){
+            if(!labels.hasOwnProperty(codeLines[i].LabelReference)){
+                throw generateErrorMessage(codeLines[i]) + " (no such label: '" + codeLines[i].LabelReference + "')";
+            }
+        }
+    }
 }
 
 function generateErrorMessage(codeLine){

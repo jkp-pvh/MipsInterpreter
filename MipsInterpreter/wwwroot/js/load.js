@@ -7,6 +7,8 @@ function LoadCode(code) {
 
     labels = parseLabels(parsedDataSectionLines, parsedTextSectionLines);
 
+    validateLabelReferences(labels, parsedTextSectionLines);
+
     clearMemory();
     var PCInitValue = writeDataSectionToMemory(parsedDataSectionLines);
     writeTextSectionToMemory(parsedTextSectionLines, PCInitValue);
@@ -14,10 +16,6 @@ function LoadCode(code) {
     printMemoryToScreen(memory);
 
     return PCInitValue;
-}
-
-function initLabelDictionary(parsedDataSectionLines) {
-
 }
 
 function clearMemory() {

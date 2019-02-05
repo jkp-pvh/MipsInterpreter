@@ -9,13 +9,23 @@
     }
 }
 
-class LoadImmediate {
+class JumpInstruction{
+    constructor(label, opCode, labelReference, displayValue){
+        this.Label = label;
+        this.OpCode = opCode;
+        this.LabelReference = labelReference;
+        this.DisplayValue = displayValue;
+    }
+}
+
+class LoadImmediate { //todo: rename to LoadImmediateInstruction
     constructor(label, opCode, destRegister, immediateValue, displayValue) {
         this.Label = label;
         this.OpCode = opCode;
         this.DestRegister = destRegister;
         this.ImmediateValue = immediateValue;
         this.DisplayValue = displayValue;
+        
     }
 }
 

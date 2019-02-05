@@ -3,6 +3,7 @@
 
     var instrAddress = parseInt(registers["$pc"].DisplayValue);
     var curInstruction = memory[instrAddress];
+    var shouldIncrementPC = true;
 
     if (curInstruction instanceof LoadImmediate) {
         executeLoadImmediate(curInstruction, registers);    
@@ -10,9 +11,16 @@
     else if(curInstruction instanceof ArithmeticInstruction){
         executeArithmeticInstruction(curInstruction, registers);
     }
+    else if(curInstruction instanceof JumpInstruction){
+        executeJump(curInstruction, registers, labels);
+        shouldIncrementPC = false;
+    }
 
-    registers["$pc"].DisplayValue = (instrAddress + 1).toString();
-    registers["$pc"].HasChanged = true;
+    if(shouldIncrementPC){
+        registers["$pc"].DisplayValue = (instrAddress + 1).toString();
+        registers["$pc"].HasChanged = true;
+    }
+    
 
     printRegistersToScreen(registers);
 }
@@ -23,6 +31,12 @@ function executeArithmeticInstruction(instruction, registers){
             executeAdd(instruction, registers);
             break;
     }
+}
+
+function executeJump(instruction, registers, labels){
+    var newPCValue = labels[instruction.LabelReference];
+    registers["$pc"].DisplayValue = newPCValue.toString();
+    registers["$pc"].HasChanged = true;
 }
 
 function executeAdd(instruction, registers){

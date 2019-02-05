@@ -52,6 +52,9 @@ function parseTextLine(tokens, lastLineLabel) {
             retVal.ShouldUpdateLastLineLabel = true;
         }
 
+        if(tokens.length == 2){
+            retVal.ParsedLine = ParseInstruction_LengthTwo(tokens, curLineLabel);
+        }
         if (tokens.length == 3) {
 
             if (IsLabel(tokens[0])) {
@@ -90,6 +93,11 @@ function ParseArithmeticInstruction(tokens, curLineLabel){
     var sourceRegister2 = parseRegisterToken(tokens[3]);
 
     return new ArithmeticInstruction(curLineLabel, tokens[0], destRegister, sourceRegister1, sourceRegister2, displayValue);
+}
+
+function ParseInstruction_LengthTwo(tokens, curLineLabel){
+    var displayValue = tokens[0] + " " + tokens[1];
+    return new JumpInstruction(curLineLabel, tokens[0], tokens[1], displayValue);
 }
 
 function ParseInstruction_LengthThree(tokens, curLineLabel) {
@@ -209,12 +217,18 @@ function GetTextAndDataSections(code) {
     return retVal;
 }
 
+function parseLabel(label)
+{
+    return label.replace(":", "");
+}
+
 function parseLabels(dataLines, textLines){
     var labels = {};   
     
     for(var i=0; i<dataLines.length; i++){
         var curLabel = dataLines[i].Label;
         if(curLabel != null){
+            curLabel = parseLabel(curLabel);
             if(labels.hasOwnProperty(curLabel)){
                 throw "duplicate label: '" + curLabel + "'";
             }
@@ -226,7 +240,7 @@ function parseLabels(dataLines, textLines){
     for(var i=0; i<textLines.length; i++){
         var curLabel = textLines[i].Label;
         if(curLabel != null){
-
+            curLabel = parseLabel(curLabel);
             if(labels.hasOwnProperty(curLabel)){
                 throw "duplicate label: '" + curLabel + "'";
             }
