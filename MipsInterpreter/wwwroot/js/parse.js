@@ -74,16 +74,25 @@ function parseTextLine(tokens, lastLineLabel) {
                     retVal.ParsedLine = ParseArithmeticInstruction(tokens, curLineLabel);
                 }
                 else {
-                    //todo: handle BEQ instruction
+                    retVal.ParsedLine = ParseBranchInstruction_LengthFour(tokens, curLineLabel);
                 }
             }
         }
         else if (tokens.length == 5) {
-
+            
         }
     }
     
     return retVal;
+}
+
+function ParseBranchInstruction_LengthFour(tokens, curLineLabel) {
+    var displayValue = getDisplayValueFromTokens(tokens);
+    var registerOne = parseRegisterToken(tokens[1]);
+    var registerTwo = parseRegisterToken(tokens[2]);
+    var labelReference = tokens[3];
+    
+    return new BranchEqualityInstruction(curLineLabel, tokens[0], registerOne, registerTwo, labelReference, displayValue);
 }
 
 function ParseArithmeticInstruction(tokens, curLineLabel){
@@ -250,4 +259,12 @@ function parseLabels(dataLines, textLines){
     }
 
     return labels;
+}
+
+function getDisplayValueFromTokens(tokens) {
+    var retVal = "";
+    for (var i = 0; i < tokens.length; i++) {
+        retVal += tokens[i] + " ";
+    }
+    return retVal;
 }

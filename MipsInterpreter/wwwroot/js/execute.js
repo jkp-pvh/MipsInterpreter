@@ -6,13 +6,17 @@
     var shouldIncrementPC = true;
 
     if (curInstruction instanceof LoadImmediate) {
-        executeLoadImmediate(curInstruction, registers);    
+        executeLoadImmediate(curInstruction, registers);
     }
-    else if(curInstruction instanceof ArithmeticInstruction){
+    else if (curInstruction instanceof ArithmeticInstruction) {
         executeArithmeticInstruction(curInstruction, registers);
     }
-    else if(curInstruction instanceof JumpInstruction){
+    else if (curInstruction instanceof JumpInstruction) {
         executeJump(curInstruction, registers, labels);
+        shouldIncrementPC = false;
+    }
+    else if (curInstruction instanceof BranchEqualityInstruction) {
+        executeBranchEqualityInstruction(curInstruction, registers, labels);
         shouldIncrementPC = false;
     }
 
@@ -23,6 +27,33 @@
     
 
     printRegistersToScreen(registers);
+}
+
+function executeBranchEqualityInstruction(instruction, registers, labels) {
+    switch (instruction.OpCode) {
+        case "beq":
+            executeBEQ(instruction, registers, labels);
+            break;
+        case "bne":
+            break;
+    }
+}
+
+function executeBEQ(instruction, registers, labels) {
+    var registerOneValue = registers[instruction.RegisterOne].DisplayValue;
+    var registerTwoValue = registers[instruction.RegisterTwo].DisplayValue;
+
+    var newPCValue = 0;
+    if (registerOneValue == registerTwoValue) {
+        newPCValue = labels[instruction.LabelReference];
+    }
+    else {
+        var currentPCValue = parseInt(registers["$pc"].DisplayValue);
+        newPCValue = currentPCValue + 1;
+    }
+
+    registers["$pc"].DisplayValue = newPCValue.toString();
+    registers["$pc"].HasChanged = true;
 }
 
 function executeArithmeticInstruction(instruction, registers){

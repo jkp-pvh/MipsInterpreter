@@ -9,6 +9,17 @@
     }
 }
 
+class BranchEqualityInstruction {
+    constructor(label, opCode, registerOne, registerTwo, labelReference, displayValue) {
+        this.Label = label;
+        this.OpCode = opCode;
+        this.RegisterOne = registerOne;
+        this.RegisterTwo = registerTwo;
+        this.LabelReference = labelReference;
+        this.DisplayValue = displayValue;
+    }
+}
+
 class JumpInstruction{
     constructor(label, opCode, labelReference, displayValue){
         this.Label = label;

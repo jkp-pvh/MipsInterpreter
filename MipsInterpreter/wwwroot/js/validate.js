@@ -1,20 +1,19 @@
 ﻿
 function validateTextLine(textLine, tokens, lastLineLabel) {
     /* SUPPORTED INSTRUCTIONS
-     * add $d, $s, $t   #adds $s and $t and stores the result in $d
-     * 
-     * NOT YET SUPPORTED INSTRUCTIONS:
+     * 1 TOKEN
+     *  halt* - new
      * 
      * 2 TOKENS
      *  b
-     *  j
+     #  j
      *  jr
      *  jal
      * 
      * 3 TOKENS
      *  label + 2-token instruction
      * 
-     *  li
+     #  li
      *  lw
      *  sw
      *  la
@@ -22,12 +21,15 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
      * 4 TOKENS
      *  label + 3-token instruction
      * 
-     *  add
+     #  add
      *  sub
-     *  mult - modifed
-     *  div - modified
-     *  mod - new
-     *  beq
+     *  mult* - modifed
+     *  div* - modified
+     *  mod* - new
+     ^  beq
+     *  bgtz
+     *  blez
+     *  bne
      *  
      * 5 TOKENS
      *  label + 4-token instruction
@@ -106,8 +108,9 @@ function validateTextLine_LengthFour(textLine, tokens, startIndex) {
         validateRegisterToken(textLine, tokens, 2);
         validateRegisterToken(textLine, tokens, 3);
     }
-    else {
-        //beq is the only non-arithmetic 4-token instruction
+    else if (IsBranchOpCode_LengthFour(tokens[0])) { //beq and bne are the only non-arithmetic 4-token instructions
+        validateRegisterToken(textLine, tokens, 1);
+        validateRegisterToken(textLine, tokens, 2);
     }
 }
 
@@ -141,6 +144,19 @@ function validateRegisterToken(textLine, tokens, index) {
     }
 
     return true;
+}
+
+function IsBranchOpCode_LengthFour(opCode) {
+    retVal = false;
+
+    switch (opCode) {
+        case "beq":
+        case "bne":
+            retVal = true;
+            break;
+    }
+
+    return retVal;
 }
 
 function IsArithmeticOpCode(opCode) {
@@ -224,8 +240,13 @@ function validateValue(value) {
 
 function validateLabelReferences(labels, codeLines){
     for(var i = 0; i < codeLines.length; i++){
-        if(codeLines[i] instanceof JumpInstruction){
-            if(!labels.hasOwnProperty(codeLines[i].LabelReference)){
+        if (codeLines[i] instanceof JumpInstruction) {
+            if (!labels.hasOwnProperty(codeLines[i].LabelReference)) {
+                throw generateErrorMessage(codeLines[i]) + " (no such label: '" + codeLines[i].LabelReference + "')";
+            }
+        }
+        else if (codeLines[i] instanceof BranchEqualityInstruction)  {
+            if (!labels.hasOwnProperty(codeLines[i].LabelReference)) {
                 throw generateErrorMessage(codeLines[i]) + " (no such label: '" + codeLines[i].LabelReference + "')";
             }
         }
