@@ -14,8 +14,8 @@
      * 
      #  li
      #  lw
-     *  sw
-     *  move
+     #  sw
+     -  move    //you can do a SW, then LW to mimic move
      * 
      * 4 TOKENS
      *  label + 3-token instruction
