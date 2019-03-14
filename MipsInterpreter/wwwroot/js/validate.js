@@ -1,14 +1,13 @@
-﻿
-function validateTextLine(textLine, tokens, lastLineLabel) {
-    /* SUPPORTED INSTRUCTIONS
+﻿/* SUPPORTED INSTRUCTIONS
      * 1 TOKEN
-     *  halt* - new
+     -  halt* - new
      * 
      * 2 TOKENS
-     *  b
+     *  b (jumps to offset instead of label)
      #  j
-     *  jr
-     *  jal
+     -  jr
+     -  jal
+     *  la
      * 
      * 3 TOKENS
      *  label + 2-token instruction
@@ -16,6 +15,7 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
      #  li
      #  lw
      *  sw
+     *  move
      * 
      * 4 TOKENS
      *  label + 3-token instruction
@@ -27,19 +27,25 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
      *  mod* - new
      #  beq
      *  bgtz
-     *  blez
-     *  bne
+     -  blez
+     -  bne
      *  
      * 5 TOKENS
      *  label + 4-token instruction
      * 
      * ALL FORMS OF lw:
-     * lw $t, $s        #copies 1 word from memory address $s and stores it in $t
+     * lw $t, ($s)        #copies 1 word from memory address $s and stores it in $t
      * lw $t offset($)  #copies 1 word from memory address ($s + offset) and stores it in $t
      * lw $t label  #copies 1 word from memory address label and stores it in $t
      * lw $t offset(label)  #copies 1 word from memory address (label + offset) and stores it in $t #check that this is actually supported in SPIM
      */
 
+/*
+TODO:
+    * maybe also highlight memory values that have changed (due to a store word instruction)
+ */
+
+function validateTextLine(textLine, tokens, lastLineLabel) {
     if (tokens.length == 1) {
         validateLabel(textLine, tokens[0], lastLineLabel)
     }
@@ -80,7 +86,7 @@ function validateTextLine_LengthThree(textLine, tokens, startIndex) {
         validateRegisterToken(textLine, tokens, startIndex + 1);
         validateImmediate(textLine, tokens[startIndex + 2]);
     }
-    else if (opCode == "lw") {
+    else if (opCode == "lw" || opCode == "sw") {
         validateRegisterToken(textLine, tokens, startIndex + 1);
         validateRegisterAndOffset(textLine, tokens[startIndex + 2]);
     }
@@ -135,7 +141,7 @@ function validateImmediate(textLine, immediateValue) {
 
 function validateRegisterAndOffset(textLine, registerAndOffset) {
     if (!registerAndOffset.includes("("))
-        throw generateErrorMessage(textLine) + " source register must be wrapped in parentheses.";
+        throw generateErrorMessage(textLine) + " second register must be wrapped in parentheses.";
 
     var split = registerAndOffset.split("(");
     if (split.length != 2)
@@ -150,7 +156,7 @@ function validateRegisterAndOffset(textLine, registerAndOffset) {
         throw generateErrorMessage(textLine) + " invalid offset value - '" + offset + "'";
 
     if (!register.endsWith(")"))
-        throw generateErrorMessage(textLine) + " source register must be wrapped in parentheses.";
+        throw generateErrorMessage(textLine) + " second register must be wrapped in parentheses.";
 
     register = register.replace(")", "");
 

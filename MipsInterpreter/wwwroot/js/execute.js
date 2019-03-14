@@ -11,6 +11,9 @@
     else if (curInstruction instanceof LoadWordInstruction) {
         executeLoadWord(curInstruction, registers, memory);
     }
+    else if (curInstruction instanceof StoreWordInstruction){
+        executeStoreWord(curInstruction, registers, memory);
+    }
     else if (curInstruction instanceof ArithmeticInstruction) {
         executeArithmeticInstruction(curInstruction, registers);
     }
@@ -30,6 +33,7 @@
     
 
     printRegistersToScreen(registers);
+    printMemoryToScreen(memory, 0);
 }
 
 function executeBranchEqualityInstruction(instruction, registers, labels) {
@@ -92,6 +96,15 @@ function executeLoadWord(instruction, registers, memory) {
 
     registers[instruction.DestRegister].DisplayValue = memory[addressToLoad].DisplayValue;
     registers[instruction.DestRegister].HasChanged = true;
+}
+
+function executeStoreWord(instruction, registers, memory) {
+    var sourceRegisterValue = parseInt(registers[instruction.SourceRegister].DisplayValue);
+    var addressRegisterValue = parseInt(registers[instruction.AddressRegister].DisplayValue);
+
+    var addressToStore = addressRegisterValue + instruction.Offset;
+
+    memory[addressToStore].DisplayValue = sourceRegisterValue
 }
 
 function clearRegistersChangedFlag(registers) {

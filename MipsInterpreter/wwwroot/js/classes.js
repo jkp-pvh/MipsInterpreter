@@ -20,6 +20,17 @@ class LoadWordInstruction {
     }
 }
 
+class StoreWordInstruction {
+    constructor(label, opCode, sourceRegister, addressRegister, offset, displayValue) {
+        this.Label = label;
+        this.OpCode = opCode;
+        this.SourceRegister = sourceRegister;
+        this.AddressRegister = addressRegister;
+        this.Offset = offset;
+        this.DisplayValue = displayValue;
+    }
+}
+
 class BranchEqualityInstruction {
     constructor(label, opCode, registerOne, registerTwo, labelReference, displayValue) {
         this.Label = label;

@@ -114,23 +114,38 @@ function ParseInstruction_LengthThree(tokens, curLineLabel) {
 
     var destRegister = parseRegisterToken(tokens[1]);
     if (tokens[0] == "li") {
-
         return new LoadImmediate(curLineLabel, tokens[0], destRegister, tokens[2], displayValue);
     }
-    else if (tokens[0] == "lw") {
-        var registerAndOffset = tokens[2];
-        var split = registerAndOffset.split("(");
-
-        var offset = 0;
-        if (split[0] != "") {
-            offset = parseInt(split[0]);
-        }
-
-        split[1] = split[1].replace(")", "");
-        var sourceRegister = parseRegisterToken(split[1]);
-
-        return new LoadWordInstruction(curLineLabel, tokens[0], destRegister, sourceRegister, offset, displayValue);
+    else if (tokens[0] == "lw" || tokens[0] == "sw") {
+        return parseLoadOrStoreWord(tokens, curLineLabel);
     }
+    
+}
+
+function parseLoadOrStoreWord(tokens, curLineLabel) {
+    var displayValue = tokens[0] + " " + tokens[1] + " " + tokens[2];
+    var registerOne = parseRegisterToken(tokens[1]);
+
+    var registerAndOffset = tokens[2];
+    var split = registerAndOffset.split("(");
+
+    var offset = 0;
+    if (split[0] != "") {
+        offset = parseInt(split[0]);
+    }
+
+    split[1] = split[1].replace(")", "");
+
+    
+    var registerTwo = split[1];
+
+    if (tokens[0] == "lw") {
+        return new LoadWordInstruction(curLineLabel, tokens[0], registerOne, registerTwo, offset, displayValue);
+    }
+    else if (tokens[0] == "sw") {
+        return new StoreWordInstruction(curLineLabel, tokens[0], registerOne, registerTwo, offset, displayValue);
+    }
+
     
 }
 
