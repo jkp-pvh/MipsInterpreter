@@ -111,8 +111,27 @@ function ParseInstruction_LengthTwo(tokens, curLineLabel){
 
 function ParseInstruction_LengthThree(tokens, curLineLabel) {
     var displayValue = tokens[0] + " " + tokens[1] + " " + tokens[2];
+
     var destRegister = parseRegisterToken(tokens[1]);
-    return new LoadImmediate(curLineLabel, tokens[0], destRegister, tokens[2], displayValue);
+    if (tokens[0] == "li") {
+
+        return new LoadImmediate(curLineLabel, tokens[0], destRegister, tokens[2], displayValue);
+    }
+    else if (tokens[0] == "lw") {
+        var registerAndOffset = tokens[2];
+        var split = registerAndOffset.split("(");
+
+        var offset = 0;
+        if (split[0] != "") {
+            offset = parseInt(split[0]);
+        }
+
+        split[1] = split[1].replace(")", "");
+        var sourceRegister = parseRegisterToken(split[1]);
+
+        return new LoadWordInstruction(curLineLabel, tokens[0], destRegister, sourceRegister, offset, displayValue);
+    }
+    
 }
 
 function parseRegisterToken(token) {

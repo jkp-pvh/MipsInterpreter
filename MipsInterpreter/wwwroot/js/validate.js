@@ -14,9 +14,8 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
      *  label + 2-token instruction
      * 
      #  li
-     *  lw
+     #  lw
      *  sw
-     *  la
      * 
      * 4 TOKENS
      *  label + 3-token instruction
@@ -26,7 +25,7 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
      *  mult* - modifed
      *  div* - modified
      *  mod* - new
-     ^  beq
+     #  beq
      *  bgtz
      *  blez
      *  bne
@@ -74,9 +73,17 @@ function validateTextLine_LengthTwo(textLine, tokens, startIndex){
 }
 
 function validateTextLine_LengthThree(textLine, tokens, startIndex) {
-    validateOpCode_Length3(textLine, tokens[startIndex]);
-    validateRegisterToken(textLine, tokens, startIndex + 1);
-    validateImmediate(textLine, tokens[startIndex + 2]);
+    var opCode = tokens[startIndex];
+    validateOpCode_Length3(textLine, opCode);
+
+    if (opCode == "li") {
+        validateRegisterToken(textLine, tokens, startIndex + 1);
+        validateImmediate(textLine, tokens[startIndex + 2]);
+    }
+    else if (opCode == "lw") {
+        validateRegisterToken(textLine, tokens, startIndex + 1);
+        validateRegisterAndOffset(textLine, tokens[startIndex + 2]);
+    }
 }
 
 function validateOpCode_Length2(textLine, opCode) {
@@ -126,19 +133,52 @@ function validateImmediate(textLine, immediateValue) {
     return true;
 }
 
-function validateRegisterToken(textLine, tokens, index) {
+function validateRegisterAndOffset(textLine, registerAndOffset) {
+    if (!registerAndOffset.includes("("))
+        throw generateErrorMessage(textLine) + " source register must be wrapped in parentheses.";
 
-    if (!tokens[index].startsWith("$")) {
-        throw generateErrorMessage(textLine) + " (register: '" + tokens[index] + "' should start with $)";
+    var split = registerAndOffset.split("(");
+    if (split.length != 2)
+        throw generateErrorMessage(textLine) + " needs to contain at least 1 '(' character.";
+    else if (split[1] == "") 
+        throw generateErrorMessage(textLine) + " '(' cannot be the last character.";
+
+    var offset = split[0];
+    var register = split[1];
+
+    if (isNaN(offset) && offset != "")
+        throw generateErrorMessage(textLine) + " invalid offset value - '" + offset + "'";
+
+    if (!register.endsWith(")"))
+        throw generateErrorMessage(textLine) + " source register must be wrapped in parentheses.";
+
+    register = register.replace(")", "");
+
+    validateRegisterTokenHelper(textLine, register, false);
+}
+
+function validateRegisterToken(textLine, tokens, index) {
+    var shouldHaveComma = index != tokens.length - 1;
+    return validateRegisterTokenHelper(textLine, tokens[index], shouldHaveComma);
+}
+
+function validateRegisterTokenHelper(textLine, token, shouldHaveComma) {
+    if (!token.startsWith("$")) {
+        throw generateErrorMessage(textLine) + " (register: '" + token + "' should start with $)";
     }
 
-    if (index != tokens.length - 1) {
-        if (!tokens[index].endsWith(",")) {
-            throw generateErrorMessage(textLine) + " (register '" + tokens[index] + "' should end with a comma)";
+    if (shouldHaveComma) {
+        if (!token.endsWith(",")) {
+            throw generateErrorMessage(textLine) + " (register '" + token + "' should end with a comma)";
+        }
+    }
+    else {
+        if (token.endsWith(",")) {
+            throw generateErrorMessage(textLine) + " (register '" + token + "' should NOT end with a comma)";
         }
     }
 
-    var strippedToken = tokens[index].replace(",", "");
+    var strippedToken = token.replace(",", "");
     if (!registers.hasOwnProperty(strippedToken)) { //if the registers collection does not contain the key strippedToken:
         throw generateErrorMessage(textLine) + " (no such register: '" + strippedToken + "')";
     }

@@ -9,6 +9,17 @@
     }
 }
 
+class LoadWordInstruction {
+    constructor(label, opCode, destRegister, sourceRegister, offset, displayValue) {
+        this.Label = label;
+        this.OpCode = opCode;
+        this.DestRegister = destRegister;
+        this.SourceRegister = sourceRegister;
+        this.Offset = offset;
+        this.DisplayValue = displayValue;
+    }
+}
+
 class BranchEqualityInstruction {
     constructor(label, opCode, registerOne, registerTwo, labelReference, displayValue) {
         this.Label = label;

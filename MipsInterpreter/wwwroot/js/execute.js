@@ -8,6 +8,9 @@
     if (curInstruction instanceof LoadImmediate) {
         executeLoadImmediate(curInstruction, registers);
     }
+    else if (curInstruction instanceof LoadWordInstruction) {
+        executeLoadWord(curInstruction, registers, memory);
+    }
     else if (curInstruction instanceof ArithmeticInstruction) {
         executeArithmeticInstruction(curInstruction, registers);
     }
@@ -80,6 +83,14 @@ function executeAdd(instruction, registers){
 
 function executeLoadImmediate(instruction, registers){
     registers[instruction.DestRegister].DisplayValue = instruction.ImmediateValue;
+    registers[instruction.DestRegister].HasChanged = true;
+}
+
+function executeLoadWord(instruction, registers, memory) {
+    var sourceRegisterValue = parseInt(registers[instruction.SourceRegister].DisplayValue);
+    var addressToLoad = sourceRegisterValue + instruction.Offset;
+
+    registers[instruction.DestRegister].DisplayValue = memory[addressToLoad].DisplayValue;
     registers[instruction.DestRegister].HasChanged = true;
 }
 

@@ -1,7 +1,7 @@
 ﻿
 function initRegisters() {
     var registers = {};
-    registers["zero"] = new Register("", false);
+    registers["$zero"] = new Register("0", false);
     registers["$at"] = new Register("", false);
     registers["$v0"] = new Register("", false);
     registers["$v1"] = new Register("", false);
