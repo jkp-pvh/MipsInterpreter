@@ -63,12 +63,28 @@ function executeBEQ(instruction, registers, labels) {
     registers["$pc"].HasChanged = true;
 }
 
-function executeArithmeticInstruction(instruction, registers){
+function executeArithmeticInstruction(instruction, registers) {
+    var arithmeticFunc;
+
     switch(instruction.OpCode){
         case "add":
-            executeAdd(instruction, registers);
+            arithmeticFunc = function (a, b) { return a + b; };
+            break;
+        case "sub":
+            arithmeticFunc = function (a, b) { return a - b; };
+            break;
+        case "mult":
+            arithmeticFunc = function (a, b) { return a * b; };
+            break;
+        case "div":
+            arithmeticFunc = function (a, b) { return a / b; };
+            break;
+        case "mod":
+            arithmeticFunc = function (a, b) { return a % b; };
             break;
     }
+
+    executeArithmeticInstructionHelper(instruction, registers, arithmeticFunc);
 }
 
 function executeJump(instruction, registers, labels){
@@ -77,11 +93,12 @@ function executeJump(instruction, registers, labels){
     registers["$pc"].HasChanged = true;
 }
 
-function executeAdd(instruction, registers){
+function executeArithmeticInstructionHelper(instruction, registers, arithmeticFunc){
     var sourceValue1 = parseInt(registers[instruction.SourceRegister1].DisplayValue);
     var sourceValue2 = parseInt(registers[instruction.SourceRegister2].DisplayValue);
 
-    registers[instruction.DestRegister].DisplayValue = (sourceValue1 + sourceValue2).toString();
+    var result = arithmeticFunc(sourceValue1, sourceValue2);
+    registers[instruction.DestRegister].DisplayValue = result.toString();
     registers[instruction.DestRegister].HasChanged = true;
 }
 

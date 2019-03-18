@@ -15,16 +15,16 @@
      #  li
      #  lw
      #  sw
-     -  move    //you can do a SW, then LW to mimic move
+     *  move    //you can do a SW, then LW to mimic move
      * 
      * 4 TOKENS
      *  label + 3-token instruction
      * 
      #  add
-     *  sub
-     *  mult* - modifed
-     *  div* - modified
-     *  mod* - new
+     #  sub
+     #  mult* - modifed
+     #  div* - modified
+     #  mod* - new
      #  beq
      *  bgtz
      -  blez
@@ -213,6 +213,7 @@ function IsArithmeticOpCode(opCode) {
         case "sub":
         case "mult":
         case "div":
+        case "mod":
             retVal = true;
             break;
     }
@@ -227,6 +228,7 @@ function validateOpCode_Length4(textLine, opCode) {
         case "mult":
         case "div":
         case "beq":
+        case "mod":
             break;
         default:
             throw generateErrorMessage(textLine) + " (invalid op code: " + opCode + ", or this opcode does not use 4 tokens)";
