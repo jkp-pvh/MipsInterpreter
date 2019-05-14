@@ -119,7 +119,18 @@ function ParseInstruction_LengthThree(tokens, curLineLabel) {
     else if (tokens[0] == "lw" || tokens[0] == "sw") {
         return parseLoadOrStoreWord(tokens, curLineLabel);
     }
-    
+    else if (tokens[0] == "bgtz") {
+        return ParseBranchInstruction_LengthThree(tokens, curLineLabel);
+    }
+}
+
+function ParseBranchInstruction_LengthThree(tokens, curLineLabel) {
+    var displayValue = tokens[0] + " " + tokens[1] + " " + tokens[2];
+    var registerOne = parseRegisterToken(tokens[1]);
+    var labelReference = tokens[2];
+
+    return new BranchGreaterThanZeroInstruction(curLineLabel, tokens[0], registerOne, labelReference, displayValue)
+
 }
 
 function parseLoadOrStoreWord(tokens, curLineLabel) {

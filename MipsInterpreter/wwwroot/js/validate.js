@@ -15,7 +15,7 @@
      #  li
      #  lw
      #  sw
-     *  move    //you can do a SW, then LW to mimic move
+     *  move    
      * 
      * 4 TOKENS
      *  label + 3-token instruction
@@ -26,9 +26,9 @@
      #  div* - modified
      #  mod* - new
      #  beq
-     *  bgtz
-     -  blez
-     -  bne
+     #  bgtz
+     -  blez 
+     -  bne 
      *  
      * 5 TOKENS
      *  label + 4-token instruction
@@ -43,6 +43,10 @@
 /*
 TODO:
     * maybe also highlight memory values that have changed (due to a store word instruction)
+    * MIPS branch instructions take offsets, not labels
+    * show labels on Memory
+    * value of $pc register not updated when you click Load Code
+    * labels are not recognized if it's the last line in the program. (You need another dummy instruction below it).
  */
 
 function validateTextLine(textLine, tokens, lastLineLabel) {
@@ -86,9 +90,15 @@ function validateTextLine_LengthThree(textLine, tokens, startIndex) {
         validateRegisterToken(textLine, tokens, startIndex + 1);
         validateImmediate(textLine, tokens[startIndex + 2]);
     }
+    //else if (opCode == "la") {
+    //    validateRegisterToken(textLine, tokens, startIndex + 1);
+    //}
     else if (opCode == "lw" || opCode == "sw") {
         validateRegisterToken(textLine, tokens, startIndex + 1);
         validateRegisterAndOffset(textLine, tokens[startIndex + 2]);
+    }
+    else if (opCode == "bgtz") {
+        validateRegisterToken(textLine, tokens, startIndex + 1);
     }
 }
 
@@ -107,6 +117,7 @@ function validateOpCode_Length3(textLine, opCode) {
         case "lw":
         case "sw":
         case "la":
+        case "bgtz":
             break;
         default:
             throw generateErrorMessage(textLine) + " (invalid op code: " + opCode + ")";
@@ -121,7 +132,7 @@ function validateTextLine_LengthFour(textLine, tokens, startIndex) {
         validateRegisterToken(textLine, tokens, 2);
         validateRegisterToken(textLine, tokens, 3);
     }
-    else if (IsBranchOpCode_LengthFour(tokens[0])) { //beq and bne are the only non-arithmetic 4-token instructions
+    else if (IsBranchOpCode_LengthFour(tokens[0])) { //beq is the only non-arithmetic 4-token instructions
         validateRegisterToken(textLine, tokens, 1);
         validateRegisterToken(textLine, tokens, 2);
     }
@@ -197,7 +208,6 @@ function IsBranchOpCode_LengthFour(opCode) {
 
     switch (opCode) {
         case "beq":
-        case "bne":
             retVal = true;
             break;
     }
@@ -227,8 +237,8 @@ function validateOpCode_Length4(textLine, opCode) {
         case "sub":
         case "mult":
         case "div":
-        case "beq":
         case "mod":
+        case "beq":
             break;
         default:
             throw generateErrorMessage(textLine) + " (invalid op code: " + opCode + ", or this opcode does not use 4 tokens)";
@@ -290,14 +300,24 @@ function validateLabelReferences(labels, codeLines){
     for(var i = 0; i < codeLines.length; i++){
         if (codeLines[i] instanceof JumpInstruction) {
             if (!labels.hasOwnProperty(codeLines[i].LabelReference)) {
-                throw generateErrorMessage(codeLines[i]) + " (no such label: '" + codeLines[i].LabelReference + "')";
+                throw generateErrorMessage(codeLines[i].DisplayValue) + " (no such label: '" + codeLines[i].LabelReference + "')";
             }
         }
-        else if (codeLines[i] instanceof BranchEqualityInstruction)  {
+        else if (codeLines[i] instanceof BranchEqualityInstruction) {
             if (!labels.hasOwnProperty(codeLines[i].LabelReference)) {
-                throw generateErrorMessage(codeLines[i]) + " (no such label: '" + codeLines[i].LabelReference + "')";
+                throw generateErrorMessage(codeLines[i].DisplayValue) + " (no such label: '" + codeLines[i].LabelReference + "')";
             }
         }
+        else if (codeLines[i] instanceof BranchGreaterThanZeroInstruction) {
+            if (!labels.hasOwnProperty(codeLines[i].LabelReference)) {
+                throw generateErrorMessage(codeLines[i].DisplayValue) + " (no such label: '" + codeLines[i].LabelReference + "')";
+            }
+        }
+        //else if (codeLines[i] instanceof LoadAddressInstruction) {
+        //    if (!labels.hasOwnProperty(codeLines[i].LabelReference)) {
+        //        throw generateErrorMessage(codeLines[i]) + " (no such label: '" + codeLines[i].LabelReference + "')"; //todo: duplicate code linein each error case.
+        //    }
+        //}
     }
 }
 

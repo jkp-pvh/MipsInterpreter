@@ -42,6 +42,16 @@ class BranchEqualityInstruction {
     }
 }
 
+class BranchGreaterThanZeroInstruction {
+    constructor(label, opCode, registerOne, labelReference, displayValue) {
+        this.Label = label;
+        this.OpCode = opCode;
+        this.RegisterOne = registerOne;
+        this.LabelReference = labelReference;
+        this.DisplayValue = displayValue;
+    }
+}
+
 class JumpInstruction{
     constructor(label, opCode, labelReference, displayValue){
         this.Label = label;
@@ -61,6 +71,12 @@ class LoadImmediate { //todo: rename to LoadImmediateInstruction
         
     }
 }
+
+//class LoadAddressInstruction {
+//    constructor(label) {
+//        this.Label = label;
+//    }
+//}
 
 class Register {
     constructor(displayValue, hasChanged) {

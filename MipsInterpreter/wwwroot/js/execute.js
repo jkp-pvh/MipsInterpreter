@@ -11,7 +11,7 @@
     else if (curInstruction instanceof LoadWordInstruction) {
         executeLoadWord(curInstruction, registers, memory);
     }
-    else if (curInstruction instanceof StoreWordInstruction){
+    else if (curInstruction instanceof StoreWordInstruction) {
         executeStoreWord(curInstruction, registers, memory);
     }
     else if (curInstruction instanceof ArithmeticInstruction) {
@@ -23,6 +23,10 @@
     }
     else if (curInstruction instanceof BranchEqualityInstruction) {
         executeBranchEqualityInstruction(curInstruction, registers, labels);
+        shouldIncrementPC = false;
+    }
+    else if (curInstruction instanceof BranchGreaterThanZeroInstruction) {
+        executeBGTZ(curInstruction, registers, labels);
         shouldIncrementPC = false;
     }
 
@@ -41,8 +45,6 @@ function executeBranchEqualityInstruction(instruction, registers, labels) {
         case "beq":
             executeBEQ(instruction, registers, labels);
             break;
-        case "bne":
-            break;
     }
 }
 
@@ -52,6 +54,22 @@ function executeBEQ(instruction, registers, labels) {
 
     var newPCValue = 0;
     if (registerOneValue == registerTwoValue) {
+        newPCValue = labels[instruction.LabelReference];
+    }
+    else {
+        var currentPCValue = parseInt(registers["$pc"].DisplayValue);
+        newPCValue = currentPCValue + 1;
+    }
+
+    registers["$pc"].DisplayValue = newPCValue.toString();
+    registers["$pc"].HasChanged = true;
+}
+
+function executeBGTZ(instruction, registers, labels) {
+    var registerOneValue = parseInt(registers[instruction.RegisterOne].DisplayValue);
+
+    var newPCValue = 0;
+    if (registerOneValue > 0) {
         newPCValue = labels[instruction.LabelReference];
     }
     else {
