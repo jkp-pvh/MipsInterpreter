@@ -11,6 +11,10 @@
     else if (curInstruction instanceof LoadWordInstruction) {
         executeLoadWord(curInstruction, registers, memory);
     }
+    else if (curInstruction instanceof LoadAddressInstruction)
+    {
+        executeLoadAddressInstruction(curInstruction, registers, labels);
+    }
     else if (curInstruction instanceof StoreWordInstruction) {
         executeStoreWord(curInstruction, registers, memory);
     }
@@ -34,10 +38,17 @@
         registers["$pc"].DisplayValue = (instrAddress + 1).toString();
         registers["$pc"].HasChanged = true;
     }
-    
 
     printRegistersToScreen(registers);
     printMemoryToScreen(memory, 0);
+}
+
+function executeLoadAddressInstruction(instruction, registers, labels) {
+    var destRegister = instruction.DestRegister;
+    var memoryAddress = labels[instruction.LabelReference];
+
+    registers[destRegister].DisplayValue = memoryAddress;
+    registers[destRegister].HasChanged = true;
 }
 
 function executeBranchEqualityInstruction(instruction, registers, labels) {

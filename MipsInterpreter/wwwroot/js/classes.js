@@ -72,11 +72,15 @@ class LoadImmediate { //todo: rename to LoadImmediateInstruction
     }
 }
 
-//class LoadAddressInstruction {
-//    constructor(label) {
-//        this.Label = label;
-//    }
-//}
+class LoadAddressInstruction {
+    constructor(label, opCode, destRegister, labelReference, displayValue) {
+        this.Label = label;
+        this.OpCode = opCode;
+        this.DestRegister = destRegister;
+        this.LabelReference = labelReference;
+        this.DisplayValue = displayValue;
+    }
+}
 
 class Register {
     constructor(displayValue, hasChanged) {

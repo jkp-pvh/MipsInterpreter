@@ -116,6 +116,9 @@ function ParseInstruction_LengthThree(tokens, curLineLabel) {
     if (tokens[0] == "li") {
         return new LoadImmediate(curLineLabel, tokens[0], destRegister, tokens[2], displayValue);
     }
+    else if (tokens[0] == "la") {
+        return new LoadAddressInstruction(curLineLabel, tokens[0], destRegister, tokens[2], displayValue);
+    }
     else if (tokens[0] == "lw" || tokens[0] == "sw") {
         return parseLoadOrStoreWord(tokens, curLineLabel);
     }

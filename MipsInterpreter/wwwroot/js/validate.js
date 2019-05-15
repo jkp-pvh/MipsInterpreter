@@ -90,9 +90,9 @@ function validateTextLine_LengthThree(textLine, tokens, startIndex) {
         validateRegisterToken(textLine, tokens, startIndex + 1);
         validateImmediate(textLine, tokens[startIndex + 2]);
     }
-    //else if (opCode == "la") {
-    //    validateRegisterToken(textLine, tokens, startIndex + 1);
-    //}
+    else if (opCode == "la") {
+        validateRegisterToken(textLine, tokens, startIndex + 1);
+    }
     else if (opCode == "lw" || opCode == "sw") {
         validateRegisterToken(textLine, tokens, startIndex + 1);
         validateRegisterAndOffset(textLine, tokens[startIndex + 2]);
