@@ -7,11 +7,11 @@
      #  j
      -  jr
      -  jal
-     *  la
      * 
      * 3 TOKENS
      *  label + 2-token instruction
      * 
+     #  la
      #  li
      #  lw
      #  sw
