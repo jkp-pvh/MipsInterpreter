@@ -43,10 +43,10 @@
 /*
 TODO:
     * maybe also highlight memory values that have changed (due to a store word instruction)
-    * MIPS branch instructions take offsets, not labels
     * show labels on Memory
     * value of $pc register not updated when you click Load Code
     * labels are not recognized if it's the last line in the program. (You need another dummy instruction below it).
+    * handle cases of 2-tokens + label, 3-tokens + label, etc.
  */
 
 function validateTextLine(textLine, tokens, lastLineLabel) {

@@ -6,7 +6,6 @@
 
         var headerRow = "<thead>" +
             "<th>Word</th>" +
-            "<th>Byte</th>" +
             "<th>Data</th>" +
             "</thead>";
 
@@ -23,11 +22,6 @@
 
         html += "<td>";
         html += i;
-        html += "</td>";
-
-
-        html += "<td>";
-        html += i * WORD_SIZE_IN_BYTES;
         html += "</td>";
 
         html += "<td>";
