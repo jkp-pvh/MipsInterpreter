@@ -80,6 +80,7 @@
                 var code = $("#txtCode").val();
                 var programCounterInitValue = LoadCode(code);
                 registers["$pc"].DisplayValue = programCounterInitValue;
+                registers["$pc"].HasChanged = true;
 
                 printRegistersToScreen(registers);
             }

@@ -42,15 +42,15 @@
 
 /*
 MISSING FEATURES:
-    * handle cases of 2-tokens + label, 3-tokens + label, etc.
-    * labels are not recognized if it's the last line in the program. (You need another dummy instruction below it).
-    * value of $pc register not updated when you click Load Code
     * Run feature (not just step)
-    * Reset CPU state when user clicks Load Code
+    * Reset CPU state and memory state when user clicks Load Code
 
-BUGS
-    * validate against empty file (or missing .data/.text declaration). currently shows no error message and doesn't do anything.
-    * enter this data line: '        .word   asd'. You get an error message, but not the expected one. (I have a special case for invalid literal value).
+BUGS TO FIX
+    * 
+
+BUGS INCLUDED IN RELEASE:
+    * labels at end of program not recognized (need a line of code with a label)
+    * no error message for empty code file, or missing text/data section
 
  NEW FEATURES
     * also highlight memory values that have changed (due to a store word instruction)
