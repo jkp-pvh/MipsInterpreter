@@ -41,12 +41,28 @@
      */
 
 /*
-TODO:
-    * maybe also highlight memory values that have changed (due to a store word instruction)
-    * show labels on Memory
-    * value of $pc register not updated when you click Load Code
-    * labels are not recognized if it's the last line in the program. (You need another dummy instruction below it).
+MISSING FEATURES:
     * handle cases of 2-tokens + label, 3-tokens + label, etc.
+    * labels are not recognized if it's the last line in the program. (You need another dummy instruction below it).
+    * value of $pc register not updated when you click Load Code
+    * Run feature (not just step)
+    * Reset CPU state when user clicks Load Code
+
+BUGS
+    * validate against empty file (or missing .data/.text declaration). currently shows no error message and doesn't do anything.
+    * enter this data line: '        .word   asd'. You get an error message, but not the expected one. (I have a special case for invalid literal value).
+
+ NEW FEATURES
+    * also highlight memory values that have changed (due to a store word instruction)
+    * show labels on Memory
+    
+MAYBE:
+    * implement MOVE instruction
+
+PRESENTATION PREP
+    * write example programs
+    * test example programs
+    * make documentation
  */
 
 function validateTextLine(textLine, tokens, lastLineLabel) {
@@ -57,12 +73,17 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
         validateTextLine_LengthTwo(textLine, tokens, 0);
     }
     else if (tokens.length == 3) {
-        //todo: this could be a label + 2-token instruction
-        validateTextLine_LengthThree(textLine, tokens, 0);
+        if (IsLabel(tokens[0])) {
+            validateTextLine_LengthTwo(textLine, tokens, 1);
+        }
+        else {
+            validateTextLine_LengthThree(textLine, tokens, 0);
+        }
+        
     }
     else if (tokens.length == 4) {
         if (IsLabel(tokens[0])) {
-            //todo: validate length 3
+            validateTextLine_LengthThree(textLine, tokens, 1);
         }
         else {
             //there are no instructions with 3 tokens, so it's not possible for this line to be a label plus 3-token instruction
@@ -70,7 +91,12 @@ function validateTextLine(textLine, tokens, lastLineLabel) {
         }
     }
     else if (tokens.length == 5) {
-        //todo: validate first token as label, then the rest of the tokens as a text lineof length 4
+        if (IsLabel(tokens[0])) {
+            validateTextLine_LengthFour(textLine, tokens, 1);
+        }
+        else {
+            throw generateErrorMessage(textLine) + " (5 tokens, and first token is not a label)";
+        }
     }
     else {
         throw generateErrorMessage(textLine) + " (unexpected number of tokens: " + tokens.length + ")";
@@ -126,15 +152,15 @@ function validateOpCode_Length3(textLine, opCode) {
 
 function validateTextLine_LengthFour(textLine, tokens, startIndex) {
     
-    validateOpCode_Length4(textLine, tokens[0]);
-    if (IsArithmeticOpCode(tokens[0])) {
-        validateRegisterToken(textLine, tokens, 1);
-        validateRegisterToken(textLine, tokens, 2);
-        validateRegisterToken(textLine, tokens, 3);
+    validateOpCode_Length4(textLine, tokens[startIndex]);
+    if (IsArithmeticOpCode(tokens[startIndex])) {
+        validateRegisterToken(textLine, tokens, startIndex + 1);
+        validateRegisterToken(textLine, tokens, startIndex + 2);
+        validateRegisterToken(textLine, tokens, startIndex + 3);
     }
-    else if (IsBranchOpCode_LengthFour(tokens[0])) { //beq is the only non-arithmetic 4-token instructions
-        validateRegisterToken(textLine, tokens, 1);
-        validateRegisterToken(textLine, tokens, 2);
+    else if (IsBranchOpCode_LengthFour(tokens[startIndex])) { //beq is the only non-arithmetic 4-token instructions
+        validateRegisterToken(textLine, tokens, startIndex + 1);
+        validateRegisterToken(textLine, tokens, startIndex + 2);
     }
 }
 
@@ -328,9 +354,3 @@ function generateErrorMessage(codeLine){
 function generateInvalidOpCodeMessage(codeLine){
     
 }
-
-/*
-TODO:
- * validate against empty file (or missing .data/.text declaration). currently shows no error message and doesn't do anything.
- * enter this data line: '        .word   asd'. You get an error message, but not the expected one. (I have a special case for invalid literal value).
-*/

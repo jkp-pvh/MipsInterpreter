@@ -58,7 +58,9 @@ function parseTextLine(tokens, lastLineLabel) {
         if (tokens.length == 3) {
 
             if (IsLabel(tokens[0])) {
-                //todo: handle case of label + 2-token instruction
+                curLineLabel = tokens[0];
+                tokens = tokens.slice(1);
+                retVal.ParsedLine = ParseInstruction_LengthTwo(tokens, curLineLabel);
             }
             else {
                 retVal.ParsedLine = ParseInstruction_LengthThree(tokens, curLineLabel);
@@ -67,23 +69,36 @@ function parseTextLine(tokens, lastLineLabel) {
         else if (tokens.length == 4) {
 
             if (IsLabel(tokens[0])) {
-                //todo: handle the case of label + 3-token instruction
+                curLineLabel = tokens[0];
+                tokens = tokens.slice(1);
+                retVal.ParsedLine = ParseInstruction_LengthThree(tokens, curLineLabel);
             }
             else {
-                if (IsArithmeticOpCode(tokens[0])) {
-                    retVal.ParsedLine = ParseArithmeticInstruction(tokens, curLineLabel);
-                }
-                else {
-                    retVal.ParsedLine = ParseBranchInstruction_LengthFour(tokens, curLineLabel);
-                }
+                retVal.ParsedLine = ParseInstruction_LengthFour(tokens, curLineLabel);
             }
         }
         else if (tokens.length == 5) {
-            
+            if (IsLabel(tokens[0])) {
+                curLineLabel = tokens[0];
+                tokens = tokens.slice(1);
+                retVal.ParsedLine = ParseInstruction_LengthFour(tokens, curLineLabel);
+            }
+            else {
+                throw generateErrorMessage(tokens.join(" ") + ". no instructions have 5 tokens");
+            }
         }
     }
     
     return retVal;
+}
+
+function ParseInstruction_LengthFour(tokens, curLineLabel) {
+    if (IsArithmeticOpCode(tokens[0])) {
+        return ParseArithmeticInstruction(tokens, curLineLabel);
+    }
+    else {
+        return ParseBranchInstruction_LengthFour(tokens, curLineLabel);
+    }
 }
 
 function ParseBranchInstruction_LengthFour(tokens, curLineLabel) {
