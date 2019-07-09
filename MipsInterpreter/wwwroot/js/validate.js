@@ -56,7 +56,9 @@ BUGS INCLUDED IN RELEASE:
     * show labels on Memory
     
 MAYBE:
+    * textbox already has .data section, .text section, necessary labels
     * implement MOVE instruction
+    * should SW really require parentheses around the register if there's no offset?
 
 PRESENTATION PREP
     * write example programs

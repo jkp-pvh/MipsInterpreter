@@ -10,6 +10,7 @@ function LoadCode(code) {
     validateLabelReferences(labels, parsedTextSectionLines);
 
     clearMemory();
+    registers = initRegisters();
     var PCInitValue = writeDataSectionToMemory(parsedDataSectionLines);
     writeTextSectionToMemory(parsedTextSectionLines, PCInitValue);
 
