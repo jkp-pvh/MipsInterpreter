@@ -42,17 +42,14 @@
 
 /*
 MISSING FEATURES:
-    * Reset CPU state and memory state when user clicks Load Code
 
 BUGS TO FIX
-    * 
 
 BUGS INCLUDED IN RELEASE:
     * labels at end of program not recognized (need a line of code with a label)
     * no error message for empty code file, or missing text/data section
 
  NEW FEATURES
-    * also highlight memory values that have changed (due to a store word instruction)
     * show labels on Memory
     
 MAYBE:

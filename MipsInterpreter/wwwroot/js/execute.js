@@ -10,6 +10,7 @@
 
 function step(registers, memory, labels) {
     clearRegistersChangedFlag(registers);
+    clearMemoryChangedFlag(memory);
 
     var instrAddress = parseInt(registers["$pc"].DisplayValue);
     var curInstruction = memory[instrAddress];
@@ -160,11 +161,18 @@ function executeStoreWord(instruction, registers, memory) {
 
     var addressToStore = addressRegisterValue + instruction.Offset;
 
-    memory[addressToStore].DisplayValue = sourceRegisterValue
+    memory[addressToStore].DisplayValue = sourceRegisterValue;
+    memory[addressToStore].HasChanged = true;
 }
 
 function clearRegistersChangedFlag(registers) {
     for (var key in registers) {
         registers[key].HasChanged = false;
+    }
+}
+
+function clearMemoryChangedFlag(memory) {
+    for (var key in memory) {
+        memory[key].HasChanged = false;
     }
 }

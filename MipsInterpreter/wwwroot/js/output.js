@@ -25,7 +25,9 @@
         html += "</td>";
 
         html += "<td>";
-        html += "<input type='text' value='" + memory[i].DisplayValue + "' />";
+        
+        html += "<input type='text' value='" + memory[i].DisplayValue + "' ";
+        html += memory[i].HasChanged ? " class='registerChanged' />" : "/>";
         html += "</td>";
 
         html += "</tr>";

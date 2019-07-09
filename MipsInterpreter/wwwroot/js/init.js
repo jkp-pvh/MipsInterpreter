@@ -44,7 +44,8 @@ function initMemory() {
     for (var i = 0; i < MEMORY_SIZE; i++) {
 
         var parsedLine = {
-            DisplayValue: ""
+            DisplayValue: "",
+            HasChanged: false
         };
 
         memory.push(parsedLine);
