@@ -58,7 +58,12 @@
 
             $("#btnLoadCode").click(btnLoadCode_Click);
             $("#btnStep").click(btnStep_Click);
+            $("#btnRun").click(btnRun_Click);
         });
+
+        function btnRun_Click() {
+            run(registers, memory, labels);
+        }
 
         function btnStep_Click() {
 
@@ -123,6 +128,9 @@
                 <br />
                 <br />
                 <input type="button" id="btnStep" value="step" />
+                <br />
+                <br />
+                <input type="button" id="btnRun" value="run" />
             </div>
         </div>
     </body>

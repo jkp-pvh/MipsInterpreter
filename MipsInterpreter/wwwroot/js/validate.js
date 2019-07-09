@@ -42,7 +42,6 @@
 
 /*
 MISSING FEATURES:
-    * Run feature (not just step)
     * Reset CPU state and memory state when user clicks Load Code
 
 BUGS TO FIX
