@@ -51,7 +51,7 @@ function step(registers, memory, labels) {
     }
 
     printRegistersToScreen(registers);
-    printMemoryToScreen(memory, 0);
+    printMemoryToScreen(memory, labels, 0);
 }
 
 function executeLoadAddressInstruction(instruction, registers, labels) {

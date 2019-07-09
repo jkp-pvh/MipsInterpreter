@@ -43,19 +43,20 @@
 /*
 MISSING FEATURES:
 
+
 BUGS TO FIX
+
 
 BUGS INCLUDED IN RELEASE:
     * labels at end of program not recognized (need a line of code with a label)
     * no error message for empty code file, or missing text/data section
+    * store word requires parentheses around the register if there's no offset
 
- NEW FEATURES
-    * show labels on Memory
+NEW FEATURES
+
     
 MAYBE:
-    * textbox already has .data section, .text section, necessary labels
-    * implement MOVE instruction
-    * should SW really require parentheses around the register if there's no offset?
+    * implement MOVE instruction    
 
 PRESENTATION PREP
     * write example programs

@@ -1,24 +1,38 @@
-﻿function printMemoryToScreen(memory, startIndex = 0) {
+﻿function printMemoryToScreen(memory, labels, startIndex = 0) {
 
     if (startIndex == 0) {
         var allRows = $("#tblMemoryValues tr");
         allRows.remove();
 
         var headerRow = "<thead>" +
-            "<th>Word</th>" +
+            "<th>Label</th>" +
+            "<th>Address (Words)</th>" +
             "<th>Data</th>" +
             "</thead>";
 
         var tblMemoryValues = $("#tblMemoryValues");
         tblMemoryValues.append(headerRow);
     }
-    
 
-    var rowAppenderObj = $("#tblMemoryValues tr:last")
+    var reverseLabels = null;
+    if (labels != null) {
+        reverseLabels = createReverseDictionary(labels);
+    }
+
+    var rowAppenderObj = $("#tblMemoryValues tr:last");
 
     var html = "";
     for (var i = startIndex; i < MEMORY_SIZE; i++) {
         html += "<tr>";
+
+        var label = "";
+        if (reverseLabels != null && reverseLabels.hasOwnProperty(i.toString())) {
+            label = reverseLabels[i.toString()];
+        }
+
+        html += "<td>";
+        html += label;
+        html += "</td>";
 
         html += "<td>";
         html += i;
@@ -34,6 +48,18 @@
     }
 
     rowAppenderObj.after(html);
+}
+
+function createReverseDictionary(dic) {
+    var values = Object.values(dic);
+    var keys = Object.keys(dic);
+
+    var retVal = {};
+    for (var i = 0; i < values.length; i++) {
+        retVal[values[i].toString()] = keys[i];
+    }
+
+    return retVal;
 }
 
 function printRegistersToScreen(registers) {

@@ -53,7 +53,7 @@
             registers = initRegisters();
             memory = initMemory();
 
-            printMemoryToScreen(memory);
+            printMemoryToScreen(memory, labels);
             printRegistersToScreen(registers);
 
             $("#btnLoadCode").click(btnLoadCode_Click);

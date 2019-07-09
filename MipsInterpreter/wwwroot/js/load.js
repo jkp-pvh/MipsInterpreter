@@ -14,7 +14,7 @@ function LoadCode(code) {
     var PCInitValue = writeDataSectionToMemory(parsedDataSectionLines);
     writeTextSectionToMemory(parsedTextSectionLines, PCInitValue);
 
-    printMemoryToScreen(memory);
+    printMemoryToScreen(memory, labels);
 
     return PCInitValue;
 }
