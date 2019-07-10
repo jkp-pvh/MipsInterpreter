@@ -140,6 +140,15 @@ function ParseInstruction_LengthThree(tokens, curLineLabel) {
     else if (tokens[0] == "bgtz") {
         return ParseBranchInstruction_LengthThree(tokens, curLineLabel);
     }
+    else if (tokens[0] == "move") {
+        return parseMoveInstruction(tokens, curLineLabel);
+    }
+}
+
+function parseMoveInstruction(tokens, curLineLabel) {
+    var destRegister = parseRegisterToken(tokens[1]);
+    var srcRegister = parseRegisterToken(tokens[2]);
+    return new MoveInstruction(curLineLabel, tokens[0], destRegister, srcRegister, tokens.join(" "));
 }
 
 function ParseBranchInstruction_LengthThree(tokens, curLineLabel) {

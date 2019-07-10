@@ -61,6 +61,16 @@ class JumpInstruction{
     }
 }
 
+class MoveInstruction {
+    constructor(label, opCode, destRegister, sourceRegister, displayValue) {
+        this.Label = label;
+        this.OpCode = opCode;
+        this.DestRegister = destRegister;
+        this.SourceRegister = sourceRegister;
+        this.DisplayValue = displayValue;
+    }
+}
+
 class LoadImmediate { //todo: rename to LoadImmediateInstruction
     constructor(label, opCode, destRegister, immediateValue, displayValue) {
         this.Label = label;

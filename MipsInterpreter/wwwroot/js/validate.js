@@ -56,7 +56,6 @@ NEW FEATURES
 
     
 MAYBE:
-    * implement MOVE instruction    
 
 PRESENTATION PREP
     * write example programs
@@ -125,6 +124,10 @@ function validateTextLine_LengthThree(textLine, tokens, startIndex) {
     else if (opCode == "bgtz") {
         validateRegisterToken(textLine, tokens, startIndex + 1);
     }
+    else if (opCode == "move") {
+        validateRegisterToken(textLine, tokens, startIndex + 1);
+        validateRegisterToken(textLine, tokens, startIndex + 2);
+    }
 }
 
 function validateOpCode_Length2(textLine, opCode) {
@@ -143,6 +146,7 @@ function validateOpCode_Length3(textLine, opCode) {
         case "sw":
         case "la":
         case "bgtz":
+        case "move":
             break;
         default:
             throw generateErrorMessage(textLine) + " (invalid op code: " + opCode + ")";

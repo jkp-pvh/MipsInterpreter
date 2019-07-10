@@ -22,8 +22,7 @@ function step(registers, memory, labels) {
     else if (curInstruction instanceof LoadWordInstruction) {
         executeLoadWord(curInstruction, registers, memory);
     }
-    else if (curInstruction instanceof LoadAddressInstruction)
-    {
+    else if (curInstruction instanceof LoadAddressInstruction) {
         executeLoadAddressInstruction(curInstruction, registers, labels);
     }
     else if (curInstruction instanceof StoreWordInstruction) {
@@ -44,6 +43,9 @@ function step(registers, memory, labels) {
         executeBGTZ(curInstruction, registers, labels);
         shouldIncrementPC = false;
     }
+    else if (curInstruction instanceof MoveInstruction) {
+        executeMoveInstruction(curInstruction, registers, labels);
+    }
 
     if(shouldIncrementPC){
         registers["$pc"].DisplayValue = (instrAddress + 1).toString();
@@ -52,6 +54,14 @@ function step(registers, memory, labels) {
 
     printRegistersToScreen(registers);
     printMemoryToScreen(memory, labels, 0);
+}
+
+function executeMoveInstruction(instruction, registers, labels) {
+    var destRegister = instruction.DestRegister;
+    var sourceRegister = instruction.SourceRegister;
+
+    registers[destRegister].DisplayValue = registers[sourceRegister].DisplayValue;
+    registers[destRegister].HasChanged = true;
 }
 
 function executeLoadAddressInstruction(instruction, registers, labels) {
