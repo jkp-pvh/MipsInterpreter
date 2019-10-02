@@ -1,0 +1,290 @@
+
+
+<html>
+<head>
+    <style>
+        .section {
+            float: left;
+            clear: left;
+            border: solid 1px black;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        h3 {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        table {
+            background-color: white;
+        }
+
+        td {
+            border: solid 1px black;
+            padding: 5px;
+        }
+
+        th {
+            border: solid 1px black;
+            padding: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="section" style="background-color:moccasin;">
+        <div>
+            <h3>
+                REGISTERS
+            </h3>
+            <br />
+        </div>
+        <table cellspacing='0' cellpadding='0'>
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Usage
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>$pc</td>
+                    <td>
+                        Program Counter - contains the memory address of the next instruction to execute
+                    </td>
+                    <td>never assign to program counter</td>
+                </tr>
+                <tr>
+                    <td>$zero</td>
+                    <td>
+                        always contains the value zero
+                    </td>
+                    <td>never assign to the $zero register</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section" style="background-color:azure;">
+        <div>
+            <h3>
+                ARITHMETIC
+            </h3>
+            <br />
+        </div>
+        <table cellspacing='0' cellpadding='0'>
+            <thead>
+                <tr>
+                    <th>
+                        Instruction
+                    </th>
+                    <th>
+                        Op Code
+                    </th>
+                    <th>
+                        Example
+                    </th>
+                    <th>
+                        Explanation
+                    </th>
+                    <th>
+                        Syntax
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Add</td>
+                    <td>add</td>
+                    <td>add $t0, $t1, $t2</td>
+                    <td>adds $t1 and $t2 and assigns the result to $t0</td>
+                    <td>add destinationRegister, sourceRegister, sourceRegister</td>
+                </tr>
+                <tr>
+                    <td>Subtract</td>
+                    <td>sub</td>
+                    <td>sub $t0, $t1, $t2</td>
+                    <td>subtracts $t2 from $t1 and assigns the result to $t0</td>
+                    <td>sub destinationRegister, sourceRegister, sourceRegister</td>
+                </tr>
+                <tr>
+                    <td>Multiply</td>
+                    <td>mult</td>
+                    <td>mult $t0, $t1, $t2</td>
+                    <td>multiplies $t1 and $t2 and assigns the result to $t0</td>
+                    <td>mult destinationRegister, sourceRegister, sourceRegister</td>
+                </tr>
+                <tr>
+                    <td>Divide</td>
+                    <td>div</td>
+                    <td>div $t0, $t1, $t2</td>
+                    <td>
+                        divides $t1 by $t2 and assigns the result to $t0
+                        <br />
+                        this computer uses <span style="color:red;">integer division</span> only. e.g., 11 / 2 = 5
+                    </td>
+                    <td>mult destinationRegister, sourceRegister, sourceRegister</td>
+                </tr>
+                <tr>
+                    <td>Modulus</td>
+                    <td>mod</td>
+                    <td>mod $t0, $t1, $t2</td>
+                    <td>
+                        divides $t1 by $t2 and assigns the REMAINDER to $t0
+                        <br />
+                        e.g., if $t1 = 11 and $t2 = 5, then $t0 = 1
+                    </td>
+                    <td>mod destinationRegister, sourceRegister, sourceRegister</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="section" style="background-color:burlywood;">
+        <div>
+            <h3>
+                LOGIC
+            </h3>
+            <br />
+        </div>
+        <table cellspacing='0' cellpadding='0'>
+            <thead>
+                <tr>
+                    <th>
+                        Instruction
+                    </th>
+                    <th>
+                        Op Code
+                    </th>
+                    <th>
+                        Example
+                    </th>
+                    <th>
+                        Explanation
+                    </th>
+                    <th>
+                        Syntax
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Jump</td>
+                    <td>j</td>
+                    <td>j __myLabel</td>
+                    <td>
+                        sets the program counter to the address of __myLabel.
+                    </td>
+                    <td>j label</td>
+                </tr>
+                <tr>
+                    <td>Branch if Equal</td>
+                    <td>beq</td>
+                    <td>beq $t0, $t1 __myLabel</td>
+                    <td>
+                        if $t0 and $t1 are equal, beq sets the program counter to the address of __myLabel. <br />
+                        if $t0 and $t1 are NOT equal, beq sets the program counter to the next instruction. <br />
+                    </td>
+                    <td>beq registerOne, registerTwo, label</td>
+                </tr>
+                <tr>
+                    <td>Branch if Greater than Zero</td>
+                    <td>bgtz</td>
+                    <td>bgtz $t0, __myLabel</td>
+                    <td>
+                        if $t0 is greater than zero, bgtz sets the program counter to the address of __myLabel. <br />
+                        if $t0 is less than or equal to zero, bgtz sets the program counter to the next instruction. <br />
+                    </td>
+                    <td>bgtz register, label</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="section" style="background-color:darkseagreen;">
+        <div>
+            <h3>
+                LOAD / STORE / MOVE
+            </h3>
+            <br />
+        </div>
+        <table cellspacing='0' cellpadding='0'>
+            <thead>
+                <tr>
+                    <th>
+                        Instruction
+                    </th>
+                    <th>
+                        Op Code
+                    </th>
+                    <th>
+                        Example
+                    </th>
+                    <th>
+                        Explanation
+                    </th>
+                    <th>
+                        Syntax
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Load Word</td>
+                    <td>lw</td>
+                    <td>lw $t0, 3($t1)</td>
+                    <td>takes the data stored at memory address (3 + $t1) and copies it to $t0</td>
+                    <td>
+                        lw destinationRegister, offset(sourceAddressRegister)
+                        <br />
+                        <br />
+                        offset is optional, default value is 0
+                        <br />
+                        () characters are required even if there is no offset
+                    </td>
+                </tr>
+                <tr>
+                    <td>Store Word</td>
+                    <td>sw</td>
+                    <td>sw $t0, 3($t1)</td>
+                    <td>takes the data stored in $t0 and copies it to memory address (3 + $t1)</td>
+                    <td>
+                        sw sourceRegister, offset($destinationAddressRegister)
+                        <br />
+                        <br />
+                        offset is optional, default value is 0
+                        <br />
+                        () characters are required even if there is no offset
+                    </td>
+                </tr>
+                <tr>
+                    <td>Load Address</td>
+                    <td>la</td>
+                    <td>la $t0, __myLabel</td>
+                    <td>sets $t0 to the address of __myLabel</td>
+                    <td>la register, label</td>
+                </tr>
+                <tr>
+                    <td>Load Immediate</td>
+                    <td>li</td>
+                    <td>li $t0, 999</td>
+                    <td>sets $t0 to a literal value, in this case 999</td>
+                    <td>li register, value</td>
+                </tr>
+                <tr>
+                    <td>Move</td>
+                    <td>move</td>
+                    <td>move $t0, $t1</td>
+                    <td>copies $t1 to $t0</td>
+                    <td>move destinationRegister, sourceRegister</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

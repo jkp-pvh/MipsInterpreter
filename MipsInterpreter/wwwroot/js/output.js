@@ -65,7 +65,7 @@ function createReverseDictionary(dic) {
 function printRegistersToScreen(registers) {
     var divRegisterValues = $("#divRegisterValues")
 
-    var html = "<table cellspacing='0' cellpadding='0' style='border:solid 0px black'>";
+    var html = "<table cellspacing='0' cellpadding='0' style='border:solid 0px black; background-color:white; margin-right:5px;'>";
     html += "<thead>" +
         "<th>Register</th> <th>Value</th>"
     "</thead>"

@@ -14,6 +14,16 @@
         .registerChanged{
             background-color:yellow;
         }
+
+        h2 {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        h3 {
+            padding: 0px;
+            margin: 0px;
+        }
     </style>
 
     <script src="js/classes.js">
@@ -100,30 +110,23 @@
     </script>
 </head>
     <body>
-        <div id="testDiv"></div>
+        <div id="testDiv" style="float:left; padding:3px;">
+            <h2>PVH Coding Tool</h2>
+        </div>
 
-        <div style="float:left; padding:3px;">
-            <div style="padding:3px; float:left;">
-                Code:
+        <div style="float:left; clear:left; padding:3px;">
+            <div style="padding:3px; float:left; background-color:aliceblue; border:solid 1px black; margin:3px; padding-left:20px;">
+                <h3>Code:</h3>
+                <textarea id="txtCode" cols="60" rows="30">
+    .data
+
+
+    .text
+
+
+</textarea>
                 <br />
-                <textarea id="txtCode" cols="60" rows="30"></textarea>
-            </div>
-            <div style="padding:3px; padding-left:30px; float:left;">
-                Registers:
                 <br />
-                <div id="divRegisterValues">
-                </div>
-            </div>
-            <div style="padding:3px; padding-left:30px; float:left; overflow:scroll; max-height:900px;">
-                Memory:
-                <br />
-                <div id="divMemoryValues">
-                    <table id="tblMemoryValues" cellspacing='0' cellpadding='0' style='border:solid 0px black'>
-                        
-                    </table>
-                </div>
-            </div>
-            <div style="float:left; clear:left; margin-top:15px;">
                 <input type="button" id="btnLoadCode" value="load code" />
                 <br />
                 <br />
@@ -131,6 +134,19 @@
                 <br />
                 <br />
                 <input type="button" id="btnRun" value="run" />
+            </div>
+            <div style="padding:3px; padding-left:30px; float:left; background-color:snow; border:solid 1px black; margin:3px;">
+                <h3>Registers:</h3>
+                <div id="divRegisterValues">
+                </div>
+            </div>
+            <div style="padding:3px; padding-left:30px; float:left; background-color:mintcream; border:solid 1px black; margin:3px; max-height:900px; overflow-y:scroll;">
+                <h3>Memory:</h3>
+                <div id="divMemoryValues">
+                    <table id="tblMemoryValues" cellspacing='0' cellpadding='0' style='border:solid 0px black; background-color:white; margin-right:5px;'>
+                        
+                    </table>
+                </div>
             </div>
         </div>
     </body>
